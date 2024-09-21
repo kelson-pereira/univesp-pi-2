@@ -1,1 +1,1 @@
-web: gunicorn combate_aedes.wsgi
+web: gunicorn univesp_pi_2.wsgi
