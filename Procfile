@@ -1,0 +1,1 @@
+web: gunicorn combate_aedes.wsgi
