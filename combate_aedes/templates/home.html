@@ -7,93 +7,306 @@
     <link rel="shortcut icon" sizes="any" type="image/svg+xml" href="{% static 'imagens/favicon.svg' %}">
     <link rel="alternate icon" type="image/x-icon" href="{% static 'imagens/favicon.ico' %}" >
     <link rel="apple-touch-icon" sizes="any" href="{% static 'imagens/favicon.png' %}">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <!-- Bootstrap Icons -->
+    <!-- Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Bootstrap Icons CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <title>Aedes aegypti</title>
 </head>
 <body>
-    <div class="container-fluid text-center">
-        <div class="row">
+    <div id="scrollspy" class="container-fluid text-center">
+        <div class="row" data-bs-spy="scroll" data-bs-target="#scrollspy" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true">
             <div class="col bg-image" style="background-image: url('/static/imagens/aedes-aegypti.png'); background-position: center; background-size: cover; background-repeat: no-repeat;">
-                <div class="d-flex flex-column justify-content-between p-3" style="height: 400px;">
-                    <div>
-                        <div class="fs-1 fw-bold">AEDES AEGYPTI</div>
-                        <div>Combater o mosquito é a única forma de previnir a Dengue.</div>
+                <!-- Navbar -->
+                <nav class="navbar navbar-expand-lg bg-transparent">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="/">Combate ao mosquito</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                            <div class="navbar-nav" style="--bs-navbar-hover-color: rgb(var(--bs-link-color-rgb));">
+                                <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#informarCEP">Registrar</a>
+                                <a class="nav-link" href="#mosquito">O mosquito</a>
+                                <a class="nav-link" href="#criadouros">Os criadouros</a>
+                                <a class="nav-link" href="#registros">Meus registros</a>
+                                <a class="nav-link" href="#analise">Análise de dados</a>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <div class="pb-2">Saiba mais sobre:</div>
-                        <button type="button" class="btn btn-sm rounded-pill btn-primary mt-2 mx-1">O mosquito</button>
-                        <button type="button" class="btn btn-sm rounded-pill btn-outline-primary mt-2 mx-1">Os criadouros</button>
+                </nav>
+                <div class="ratio ratio-16x9" style="max-height: 560px; min-height: 480px;">
+                    <div class="d-flex flex-column justify-content-between align-items-center p-3 pb-4">
+                        <div>
+                            <img src="{% static 'imagens/aedes-aegypti.svg' %}" class="img-fluid w-50" alt="Aedes aegypti">
+                            <div class="lh-sm fw-medium pt-4" style="max-width: 500px;">Combater o mosquito é a única forma de previnir a Dengue. Registre um local suspeito e ajude a combatê-lo.</div>
+                            <a class="btn rounded-pill btn-primary mt-4 mx-1" data-bs-toggle="modal" data-bs-target="#informarCEP">Registrar</a>
+                        </div>
+                        <div>
+                            <div>Saiba mais sobre:</div>
+                            <a class="btn rounded-pill btn-outline-primary mt-2 mx-1" href="#mosquito">O mosquito</a>
+                            <a class="btn rounded-pill btn-outline-primary mt-2 mx-1" href="#criadouros">Os criadouros</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-6 bg-image" style="background-image: url('/static/imagens/registrar.jpg'); background-position: center; background-size: cover; background-repeat: no-repeat;">
-                <div class="d-flex flex-column justify-content-start p-3" style="height: 400px;">
-                    <div>
-                        <div class="fs-1 fw-bold">Registre um local</div>
-                        <div class="">Combater o mosquito é a única forma de previnir a Dengue.</div>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-sm rounded-pill btn-light mt-2 mx-1">Registrar</button>
-                        <button type="button" class="btn btn-sm rounded-pill btn-outline-light mt-2 mx-1">Saiba mais</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 bg-image" style="background-image: url('/static/imagens/focos.jpg'); background-position: center; background-size: cover; background-repeat: no-repeat;">
-                <div class="d-flex flex-column justify-content-between p-3" style="height: 400px;">
-                    <div>
-                        <div class="fs-1 fw-bold">Meus registros</div>
-                        <div class="">Combater o mosquito é a única forma de previnir a Dengue.</div>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-sm rounded-pill btn-light mt-2 mx-1">Registrar</button>
-                        <button type="button" class="btn btn-sm rounded-pill btn-outline-light mt-2 mx-1">Saiba mais</button>
+            <!-- bg-primary-subtle -->
+            <div class="col-md-6 bg-image text-white p-0" id="mosquito" style="background-image: url('/static/imagens/focos.jpg'); background-position: center; background-size: cover; background-repeat: no-repeat;">
+                <div class="d-flex flex-column justify-content-center align-items-center" style="height: 400px;background-color: rgba(1, 1, 30, 0.4)">
+                    <!--background-color: rgba(255, 255, 255, 0.4)-->
+                    <div class="p-3 pb-4">
+                        <h1><i class="bi bi-search"></i></h1>
+                        <h1 class="display-4 fw-medium">O mosquito</h1>
+                        <div class="lh-sm mt-3" style="max-width: 400px;">O <i>Aedes aegypti</i> é o mosquito transmissor da Dengue. Menor do que os mosquitos comuns, é preto com listras brancas no tronco, na cabeça e nas pernas.</div>
+                        <button type="button" class="btn rounded-pill btn-outline-light mt-4 mx-1">Saiba mais</button>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 bg-image" style="background-image: url('/static/imagens/mapa.jpg'); background-position: center; background-size: cover; background-repeat: no-repeat;">
-                <div class="d-flex flex-column justify-content-between p-3" style="height: 400px;">
-                    <div>
-                        <div class="fs-1 fw-bold">Mapa de calor</div>
-                        <div class="">Combater o mosquito é a única forma de previnir a Dengue.</div>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-sm rounded-pill btn-light mt-2 mx-1">Registrar</button>
-                        <button type="button" class="btn btn-sm rounded-pill btn-outline-light mt-2 mx-1">Saiba mais</button>
+            <div class="col-md-6 bg-image text-white p-0" id="criadouros" style="background-image: url('/static/imagens/registrar.jpg'); background-position: center; background-size: cover; background-repeat: no-repeat;">
+                <div class="d-flex flex-column justify-content-center align-items-center p-3 pb-4" style="height: 400px; background-color: rgba(1, 1, 1, 0.4)">
+                    <div class="p-3 pb-4">
+                        <h1><i class="bi bi-trash2-fill"></i></h1>
+                        <div class="display-4 fw-medium">Os criadouros</div>
+                        <div class="lh-sm mt-3" style="max-width: 400px;">São tipicamente locais com água parada como latas e garrafas vazias, pneus, calhas entupidas, caixas d'água descobertas, pratos sob vasos de plantas, entre outros.</div>
+                        <button type="button" class="btn rounded-pill btn-outline-light mt-4 mx-1">Saiba mais</button>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 bg-image" style="background-image: url('/static/imagens/analise-dados.jpg'); background-position: center; background-size: cover; background-repeat: no-repeat;">
-                <div class="p-3" style="height: 400px;">
-                    <div>
-                        <div class="fs-1 fw-bold">Análise de dados</div>
-                        <div class="">Combater o mosquito é a única forma de previnir a Dengue.</div>
+            <div class="col-md-6 bg-image text-white p-0" id="registros" style="background-image: url('/static/imagens/mapa.jpg'); background-position: center; background-size: cover; background-repeat: no-repeat;">
+                <div class="d-flex flex-column justify-content-center align-items-center" style="height: 400px; background-color: rgba(1, 1, 1, 0.2)">
+                    <div class="p-3 pb-4">
+                        <h1><i class="bi bi-geo-fill"></i></h1>
+                        <div class="display-4 fw-medium">Meus registros</div>
+                        <div class="lh-sm mt-3" style="max-width: 400px;">Combater o mosquito é a única forma de previnir a Dengue.</div>
+                        <button type="button" class="btn rounded-pill btn-light mt-4 mx-1">Visualizar</button>
                     </div>
-                    <div>
-                        <button type="button" class="btn btn-sm rounded-pill btn-light mt-2 mx-1">Registrar</button>
-                        <button type="button" class="btn btn-sm rounded-pill btn-outline-light mt-2 mx-1">Saiba mais</button>
+                </div>
+            </div>
+            <div class="col-md-6 bg-image text-white p-0" id="analise" style="background-image: url('/static/imagens/analise-dados.jpg'); background-position: center; background-size: cover; background-repeat: no-repeat;">
+                <div class="d-flex flex-column justify-content-center align-items-center" style="height: 400px; background-color: rgba(1, 1, 1, 0.5)">
+                    <div class="p-3 pb-4">
+                        <h1><i class="bi bi-bar-chart-line-fill"></i></h1>
+                        <div class="display-4 fw-medium">Análise de dados</div>
+                        <div class="lh-sm mt-3" style="max-width: 400px;">Combater o mosquito é a única forma de previnir a Dengue.</div>
+                        <button type="button" class="btn rounded-pill btn-light mt-4 mx-1">Visualizar</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row text-start text-black-50">
-            <div class="col bg-secondary">
-                <div class="d-flex flex-column justify-content-between p-3">
+        <div class="row text-start text-secondary">
+            <div class="col bg-secondary-subtle">
+                <div class="d-flex flex-column justify-content-between py-3">
                     <div>
                         <small>
-                            <div>UNIVESP, 2024</div>
-                            <div>Projeto Integrador em Computação II - Grupo 15</div>
-                            <div>Política de Privacidade</div>
+                            <p>
+                                <div>Sistema de monitoramento e combate ao mosquito "Aedes aegypti".</div>
+                                <div>Tema: Desenvolvimento de um software com framework web que utilize noções de banco de dados, com controle de versão.</div>
+                            </p>
+                            <hr>
+                            <p>
+                                <div>Projeto Integrador em Computação I</div>
+                                <div>Polos: Jacareí e São José dos Campos (Santana e Parque de Inovação Tecnológica)</div>
+                                <div>Grupo 018 - Maio de 2024</div>
+                                <div>UNIVESP Universidade Virtual do Estado de São Paulo</div>
+                            </p>
+                            <p>
+                                <div>Cursos:</div>
+                                <div>Engenharia da Computação</div>
+                                <div>Bacharelado em Tecnologia da Computação</div>
+                                <div>Bacharelado em Ciências de Dados</div>
+                            </p>
                         </small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal informe o CEP -->
+    <div class="modal" id="informarCEP" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar um local</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="min-height: 340px">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label fs-2 fw-bold">Informe o CEP:</label>
+                        <p>Por favor, informe o CEP do local do foco suspeito no formato 12345678.</p>
+                        <input type="text" pattern="*[0-9]" inputmode="numeric" maxlength="8" class="form-control fs-2" id="cep">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn rounded-pill btn-primary" data-bs-toggle="modal" data-bs-target="#informarNumero">Continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal informe o número -->
+    <div class="modal" id="informarNumero" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar um local</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="min-height: 340px">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label fs-2 fw-bold">Informe o número:</label>
+                        <p>Forneça o número da localidade do foco suspeito, no formato 123.</p>
+                        <input type="text" pattern="*[0-9]" inputmode="numeric" maxlength="8" class="form-control fs-2" id="numero">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn rounded-pill btn-secondary" data-bs-toggle="modal" data-bs-target="#informarCEP">Voltar</button>
+                    <button type="button" class="btn rounded-pill btn-primary" data-bs-toggle="modal" data-bs-target="#informarTelefone">Continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal informe o telefone -->
+    <div class="modal" id="informarTelefone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar um local</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="min-height: 340px">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label fs-2 fw-bold">Informe seu telefone:</label>
+                        <p>Informe seu número de telefone om DDD no formato 12987654321. Ele será solicitado se você optar por apagar esses dados.</p>
+                        <input type="text" pattern="*[0-9]" inputmode="numeric" maxlength="11" class="form-control fs-2" id="telefone">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn rounded-pill btn-secondary" data-bs-toggle="modal" data-bs-target="#informarNumero">Voltar</button>
+                    <button type="button" class="btn rounded-pill btn-primary" data-bs-toggle="modal" data-bs-target="#descreverLocal">Continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal descreva o local -->
+    <div class="modal" id="descreverLocal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar um local</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="min-height: 340px">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label fs-2 fw-bold">Descreva o local:</label>
+                        <p>(Opcional) Se possível, forneça uma descrição do local suspeito, como água parada em latas, garrafas vazias, pneus, lixo, entre outros.</p>
+                        <textarea class="form-control" rows="5" id="descricao"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn rounded-pill btn-secondary" data-bs-toggle="modal" data-bs-target="#informarTelefone">Voltar</button>
+                    <button type="button" class="btn rounded-pill btn-primary" data-bs-toggle="modal" data-bs-target="#adicionarFoto">Continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal adicione uma foto -->
+    <div class="modal" id="adicionarFoto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar um local</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="min-height: 340px">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label fs-2 fw-bold">Adicione uma foto:</label>
+                        <p>(Opcional) Se possível, adicione uma foto do local suspeito. Isso pode auxiliar significativamente nas ações de combate ao mosquito.</p>
+                        <button type="button" class="d-flex m-auto btn rounded-pill btn-primary">Tirar foto</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn rounded-pill btn-secondary" data-bs-toggle="modal" data-bs-target="#descreverLocal">Voltar</button>
+                    <button type="button" class="btn rounded-pill btn-primary" data-bs-toggle="modal" data-bs-target="#aceitarPolitica">Continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal aceite da política -->
+    <div class="modal" id="aceitarPolitica" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar um local</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="min-height: 340px">
+                    <div class="mb-3">
+                        <div class="fs-2 fw-bold">Privacidade dos dados:</div>
+                        <div>
+                            <p>Esta Política de Privacidade descreve como este sistema coleta, usa e compartilha suas informações pessoais ou dos locais suspeitos de foco do mosquito <i>Aedes aegypti</i> quando você utiliza nossos serviços. Respeitamos sua privacidade e nos esforçamos para proteger suas informações de acordo com as disposições da Lei Geral de Proteção de Dados (LGPD).</p>
+                            <ol>
+                                <li class="fs-5">Informações Coletadas</li>
+                                <p>Podemos coletar as seguintes informações pessoais sobre você ou dos locais suspeitos:</p>
+                                <ul class="fs-6 mb-3">
+                                    <li>Informações de identificação (como CEP do endereço, número do endereço e número de telefone);</li>
+                                    <li>Informações de localização (com base nas informações de endereço);</li>
+                                    <li>Informações de navegação (por meio de cookies e tecnologias similares);</li>
+                                    <li>Informações opcionais que você nos fornece voluntariamente (como nome e descrição do local).</li>
+                                </ul>
+                                <li class="fs-5">Uso das Informações</li>
+                                <p>Utilizamos suas informações pessoais ou dos locais suspeitos para os seguintes propósitos:</p>
+                                <ul class="fs-6 mb-3">
+                                    <li>Identificação e visualização de locais suspeitos;</li>
+                                    <li>Análise dos dados para melhor compreensão dos locais suspeitos;</li>
+                                    <li>Compartilhamento de informações com autoridades governamentais responsáveis pelo combate ao mosquito;</li>
+                                </ul>
+                                <li class="fs-5">Compartilhamento de Informações</li>
+                                <p>Podemos compartilhar suas informações pessoais ou dos locais suspeitos com:</p>
+                                <ul class="fs-6 mb-3">
+                                    <li>Prefeituras dos municípios;</li>
+                                    <li>Secretarias de Saúde dos municípios;</li>
+                                    <li>Centro de Controle de Zoonoses dos municípios;</li>
+                                </ul>
+                                <li class="fs-5">Armazenamento e Segurança</li>
+                                <p>Mantemos medidas de segurança técnicas, administrativas e físicas para proteger suas informações contra acesso não autorizado, divulgação, alteração ou destruição.</p>
+                                <li class="fs-5">Seus Direitos</li>
+                                <p>Você tem direito a acessar, corrigir ou excluir suas informações pessoais. Você também pode optar por não receber comunicações deste serviço a qualquer momento.</p>
+                                <li class="fs-5">Alterações nesta Política</li>
+                                <p>Esta Política de Privacidade está sujeita a alterações. Quaisquer alterações serão publicadas nesta página.</p>
+                                <li class="fs-5">Contato</li>
+                                <p>Se você tiver dúvidas sobre esta Política de Privacidade ou desejar exercer seus direitos de privacidade, entre em contato conosco através dos seguintes meios:</p>
+                                <ul style="list-style-type: none; margin:0; padding: 0;">
+                                    <li><b>Projeto Integrador:</b> Desenvolvido por alunos dos cursos de Bacharelado em Tecnologia da Informação, Bacharelado em Ciências de Dados e Engenharia da Computação.</li>
+                                    <li><b>UNIVESP</b> Universidade Virtual do Estado de São Paulo</li>
+                                    <li><b>Polos: </b>São José dos Campos (Santana e Parque de Inovação Tecnológica)</li>
+                                    <li><b>Email: </b><a href="mailto:2201726@aluno.univesp.br">2201726@aluno.univesp.br</a></li>
+                                </ul>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" value="" id="politica">
+                            <label class="form-check-label" for="politica">
+                                Concordo com a política de privacidade.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn rounded-pill btn-secondary" data-bs-toggle="modal" data-bs-target="#adicionarFoto">Voltar</button>
+                    <button type="button" class="btn rounded-pill btn-primary">Registrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
