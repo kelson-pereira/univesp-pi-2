@@ -150,7 +150,7 @@
                     </div>
                     <div class="modal-body" style="min-height: 340px">
                         <div class="mb-3">
-                            <label for="recipient-name" class="col-form-label fs-2 fw-bold">Informe o CEP:</label>
+                            <label for="recipient-name" class="col-form-label fs-2 fw-bold"><i class="bi bi-house-fill me-2"></i>Informe o CEP:</label>
                             <p>Por favor, informe o CEP do local do foco suspeito no formato 12345678.</p>
                             <input type="text" pattern="*[0-9]" inputmode="numeric" maxlength="8" class="form-control fs-2" id="cep">
                         </div>
@@ -173,8 +173,8 @@
                     </div>
                     <div class="modal-body" style="min-height: 340px">
                         <div class="mb-3">
-                            <label for="recipient-name" class="col-form-label fs-2 fw-bold">Informe o número:</label>
-                            <p>Forneça o número da localidade do foco suspeito, no formato 123.</p>
+                            <label for="recipient-name" class="col-form-label fs-2 fw-bold"><i class="bi bi-signpost-fill me-2"></i>Informe o número:</label>
+                            <p>Forneça o número da localidade do foco suspeito no formato 123.</p>
                             <input type="text" pattern="*[0-9]" inputmode="numeric" maxlength="8" class="form-control fs-2" id="numero">
                         </div>
                     </div>
@@ -196,8 +196,8 @@
                     </div>
                     <div class="modal-body" style="min-height: 340px">
                         <div class="mb-3">
-                            <label for="recipient-name" class="col-form-label fs-2 fw-bold">Informe seu telefone:</label>
-                            <p>Informe seu número de telefone om DDD no formato 12987654321. Ele será solicitado se você optar por apagar esses dados.</p>
+                            <label for="recipient-name" class="col-form-label fs-2 fw-bold"><i class="bi bi-telephone-fill me-2"></i>Informe seu telefone:</label>
+                            <p>Informe seu número de telefone com DDD no formato 12987654321. Ele será solicitado se você optar por apagar esses dados.</p>
                             <input type="text" pattern="*[0-9]" inputmode="numeric" maxlength="11" class="form-control fs-2" id="telefone">
                         </div>
                     </div>
@@ -214,14 +214,14 @@
             <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar um local</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel"></i>Registrar um local</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" style="min-height: 340px">
                         <div class="mb-3">
-                            <label for="recipient-name" class="col-form-label fs-2 fw-bold">Descreva o local:</label>
+                            <label for="recipient-name" class="col-form-label fs-2 fw-bold"><i class="bi bi-clipboard-plus-fill me-2"></i>Descreva o local:</label>
                             <p>(Opcional) Se possível, forneça uma descrição do local suspeito, como água parada em latas, garrafas vazias, pneus, lixo, entre outros.</p>
-                            <textarea class="form-control" rows="5" id="descricao"></textarea>
+                            <textarea class="form-control fs-4" rows="4" id="descricao"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -242,9 +242,9 @@
                     </div>
                     <div class="modal-body" style="min-height: 340px">
                         <div class="mb-3">
-                            <label for="recipient-name" class="col-form-label fs-2 fw-bold">Adicione uma foto:</label>
+                            <label for="recipient-name" class="col-form-label fs-2 fw-bold"><i class="bi bi-camera-fill me-2"></i>Adicione uma foto:</label>
                             <p>(Opcional) Se possível, adicione uma foto do local suspeito. Isso pode auxiliar significativamente nas ações de combate ao mosquito.</p>
-                            <button type="button mt-4" class="d-flex m-auto btn rounded-pill btn-primary">Tirar foto</button>
+                            <button type="button mt-4" class="d-flex m-auto btn rounded-pill btn-primary">Adicionar foto</button>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -265,7 +265,7 @@
                     </div>
                     <div class="modal-body border-bottom" style="min-height: 300px">
                         <div class="mb-3">
-                            <div class="fs-2 col-form-label fw-bold">Privacidade dos dados:</div>
+                            <div class="fs-2 col-form-label fw-bold"><i class="bi bi-shield-fill-check me-2"></i>Privacidade:</div>
                             <div>
                                 <p>Esta Política de Privacidade descreve como este sistema coleta, usa e compartilha suas informações pessoais ou dos locais suspeitos de foco do mosquito <i>Aedes aegypti</i> quando você utiliza nossos serviços. Respeitamos sua privacidade e nos esforçamos para proteger suas informações de acordo com as disposições da Lei Geral de Proteção de Dados (LGPD).</p>
                                 <ol>
@@ -323,4 +323,9 @@
         </div>
     </div>
 </body>
+<script>
+    const aceitarPolitica = document.getElementById('aceitarPolitica')
+    const politica = document.getElementById('politica')
+    aceitarPolitica.addEventListener('shown.bs.modal', () => {politica.focus()})
+</script>
 </html>
