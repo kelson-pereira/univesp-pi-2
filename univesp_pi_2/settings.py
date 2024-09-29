@@ -159,7 +159,7 @@ USE_I18N = True
 USE_TZ = True
 
 # Cookie Based, Browser Clearing Will lose it. 
-SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies" 
+#SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies" 
 
 # Arquivos estáticos (CSS, JavaScript, Imagens)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
