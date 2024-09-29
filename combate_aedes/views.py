@@ -14,7 +14,7 @@ def estado_form(request):
         if (request.session['form'] == 'validado'):
             request.session['form'] = 'inicial'
     else:
-        request.session.clear()
+        # request.session.clear()
         request.session['form'] = 'inicial'
     if request.method == "POST" and request.session['form'] == 'validar':
         return True
@@ -107,7 +107,7 @@ def aceitar_politica(request):
                 registro.descricao = request.session['descricao']
                 registro.termos = form.cleaned_data['termos']
                 registro.save()
-                request.session.clear()
+                #request.session.clear()
                 mensagem = "Registro salvo com sucesso!"
             except:
                 mensagem = "Erro ao salvar o registro"

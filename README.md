@@ -58,6 +58,14 @@ Projeto Integrador em Computação II - Grupo 15
 
 `python3 manage.py migrate`
 
+### Comandos para criar banco de dados na plataforma Heroku:
+
+`heroku login`
+
+`heroku run python manage.py makemigrations --app combate-aedes`
+
+`heroku run python manage.py migrate --app combate-aedes`
+
 ### Comandos de debug na Heroku:
 
 `heroku logs --tail --app combate-aedes`
