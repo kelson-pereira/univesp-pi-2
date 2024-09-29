@@ -5,7 +5,7 @@ class ValidarCep(forms.Form):
     cep = forms.CharField(initial='', widget=forms.TextInput(attrs={'class':'form-control fs-2 mt-3'}), label='Por favor, informe o CEP do local do foco suspeito no formato 12345678.', validators=[RegexValidator('^([0-9]{8})$', message='CEP inválido, use somente números.')])
 
 class ValidarNumero(forms.Form):
-    numero = forms.CharField(initial='', widget=forms.TextInput(attrs={'class':'form-control fs-2 mt-3'}), label='Forneça o número da localidade do foco suspeito no formato 123.', validators=[RegexValidator('^[0-9]\d{0,5}$', message='Número inválido, use somente números.')])
+    numero = forms.CharField(initial='', widget=forms.TextInput(attrs={'class':'form-control fs-2 mt-3'}), label='Forneça o número da localidade do foco suspeito no formato 123.', validators=[RegexValidator('^[0-9]{0,6}$', message='Número inválido, use somente números.')])
 
 class ValidarTelefone(forms.Form):
     telefone = forms.CharField(initial='', widget=forms.TextInput(attrs={'class':'form-control fs-2 mt-3'}), label='Informe seu número de telefone com DDD no formato 12987654321. Ele será solicitado se você optar por apagar esses dados.', validators=[RegexValidator('^([0-9]{11})$', message='Telefone inválido, use somente números.')])
