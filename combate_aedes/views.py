@@ -11,12 +11,12 @@ def home(request):
 # Verifica estado do form
 def estado_form(request):
     if 'form' in request.session:
-        if (request.session['form'] == 'validado'):
+        if request.session.get('form', 'validado'):
             request.session['form'] = 'inicial'
     else:
-        # request.session.clear()
+        request.session.clear()
         request.session['form'] = 'inicial'
-    if request.method == "POST" and request.session['form'] == 'validar':
+    if request.method == "POST" and request.session.get('form', 'validar'):
         return True
     else:
         return False
@@ -107,7 +107,7 @@ def aceitar_politica(request):
                 registro.descricao = request.session['descricao']
                 registro.termos = form.cleaned_data['termos']
                 registro.save()
-                #request.session.clear()
+                request.session.clear()
                 mensagem = "Registro salvo com sucesso!"
             except:
                 mensagem = "Erro ao salvar o registro"
