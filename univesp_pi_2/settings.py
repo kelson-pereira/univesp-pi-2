@@ -160,7 +160,7 @@ USE_I18N = True
 USE_TZ = True
 
 # Session use the database cache
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db" 
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies" 
 
 # Arquivos estáticos (CSS, JavaScript, Imagens)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
