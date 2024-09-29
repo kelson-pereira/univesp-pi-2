@@ -1,0 +1,22 @@
+<form hx-post="{{ request.path }}" class="modal-content">
+    <style>
+        .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
+    </style>
+    {% csrf_token %}
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar um local</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body" style="min-height: 340px">
+        <h1 class="col-form-label fs-2 fw-bold"><i class="bi bi-{{ icone }} me-2"></i>{{ titulo }}</h1>
+        {{ form.as_p }}
+    </div>
+    <div class="modal-footer">
+        {% if voltar %}
+        <button type="button" class="btn rounded-pill btn-secondary" hx-get="{% url voltar %}" hx-target="#dialog">Voltar</button>
+        {% else %}
+        <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        {% endif %}
+        <button type="submit" class="btn rounded-pill btn-primary">Continuar</button>
+    </div>
+</form>

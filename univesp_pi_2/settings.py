@@ -33,7 +33,7 @@ IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # AVISO DE SEGURANÇA: não execute com o debug ativado na produção!
 if not IS_HEROKU_APP:
-    DEBUG = False
+    DEBUG = True
 
 # Na Heroku, é seguro usar um curinga para `ALLOWED_HOSTS`, pois o roteador Heroku realiza 
 # a validação do cabeçalho Host na solicitação HTTP recebida. Em outras plataformas,
@@ -158,6 +158,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Cookie Based, Browser Clearing Will lose it. 
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies" 
 
 # Arquivos estáticos (CSS, JavaScript, Imagens)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

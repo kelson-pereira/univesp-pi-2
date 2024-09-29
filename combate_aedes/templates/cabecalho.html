@@ -1,0 +1,19 @@
+{% load static %}
+<!-- Cabeçalho -->
+<div class="col bg-image" style="background-image: url('/static/imagens/aedes-aegypti.png'); background-position: center; background-size: cover; background-repeat: no-repeat;">
+    {% include 'navbar.html' %}
+    <div class="ratio ratio-16x9" style="max-height: 560px; min-height: 462px;">
+        <div class="d-flex flex-column justify-content-between align-items-center p-3 pb-4">
+            <div>
+                <a href="/"><img src="{% static 'imagens/aedes-aegypti.svg' %}" class="img-fluid w-50" alt="Aedes aegypti"></a>
+                <div class="lh-sm fw-medium pt-4" style="max-width: 500px;">Combater o mosquito é a única forma de previnir a Dengue. Registre um local suspeito e ajude a combatê-lo.</div>
+                <button type="button" class="btn rounded-pill btn-primary mt-4 mx-1" hx-get="{% url 'validar_cep' %}" hx-target="#dialog">Registrar</button>
+            </div>
+            <div>
+                <div>Saiba mais sobre:</div>
+                <a class="btn rounded-pill btn-outline-primary mt-2 mx-1" href="#mosquito">O mosquito</a>
+                <a class="btn rounded-pill btn-outline-primary mt-2 mx-1" href="#criadouros">Os criadouros</a>
+            </div>
+        </div>
+    </div>
+</div>

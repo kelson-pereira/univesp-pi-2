@@ -21,4 +21,10 @@ from combate_aedes import views
 urlpatterns = [
     #path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('validar_cep', views.validar_cep, name='validar_cep'),
+    path('validar_numero', views.validar_numero, name='validar_numero'),
+    path('validar_telefone', views.validar_telefone, name='validar_telefone'),
+    path('validar_descricao', views.validar_descricao, name='validar_descricao'),
+    path('adicionar_foto', views.adicionar_foto, name='adicionar_foto'),
+    path('aceitar_politica', views.aceitar_politica, name='aceitar_politica'),
 ]

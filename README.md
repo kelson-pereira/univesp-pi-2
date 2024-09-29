@@ -20,6 +20,10 @@ Projeto Integrador em Computação II - Grupo 15
 
 `pip3 install --upgrade django-heroku --break-system-packages`
 
+`pip3 install --upgrade pytest-django --break-system-packages`
+
+`pip3 install --upgrade pytest-cov --break-system-packages`
+
 ### Comandos de inicialização do projeto:
 
 `django-admin startproject univesp_pi_2`
@@ -40,6 +44,30 @@ Projeto Integrador em Computação II - Grupo 15
 
 `python3 manage.py runserver 0.0.0.0:8000`
 
+### Comandos para recriar o banco:
+
+`cd univesp-pi-2`
+
+`find . -path "*/migrations/*.py" -not -name "__init__.py" -delete`
+
+`find . -path "*/migrations/*.pyc" -delete`
+
+`find . -path "*/db.sqlite3" -delete`
+
+`python3 manage.py makemigrations`
+
+`python3 manage.py migrate`
+
 ### Comandos de debug na Heroku:
 
 `heroku logs --tail --app combate-aedes`
+
+### Comandos de teste:
+
+`cd univesp-pi-2`
+
+`pytest --ds=test.settings --cov=./`
+
+`pytest --ds=test.settings --cov-report html --cov=./`
+
+`python3 manage.py test`

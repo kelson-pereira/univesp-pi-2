@@ -1,0 +1,70 @@
+<form hx-post="{{ request.path }}" class="modal-content">
+    <style>
+        .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
+    </style>
+    {% csrf_token %}
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar um local</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body border-bottom">
+        <div class="mb-3">
+            <h1 class="col-form-label fs-2 fw-bold"><i class="bi bi-{{ icone }} me-2"></i>{{ titulo }}</h1>
+            <div>
+                <p>Esta Política de Privacidade descreve como este sistema coleta, usa e compartilha suas informações pessoais ou dos locais suspeitos de foco do mosquito <i>Aedes aegypti</i> quando você utiliza nossos serviços. Respeitamos sua privacidade e nos esforçamos para proteger suas informações de acordo com as disposições da Lei Geral de Proteção de Dados (LGPD).</p>
+                <ol>
+                    <li class="fs-5">Informações Coletadas</li>
+                    <p>Podemos coletar as seguintes informações pessoais sobre você ou dos locais suspeitos:</p>
+                    <ul class="fs-6 mb-3">
+                        <li>Informações de identificação (como CEP do endereço, número do endereço e número de telefone);</li>
+                        <li>Informações de localização (com base nas informações de endereço);</li>
+                        <li>Informações de navegação (por meio de cookies e tecnologias similares);</li>
+                        <li>Informações opcionais que você nos fornece voluntariamente (como nome e descrição do local).</li>
+                    </ul>
+                    <li class="fs-5">Uso das Informações</li>
+                    <p>Utilizamos suas informações pessoais ou dos locais suspeitos para os seguintes propósitos:</p>
+                    <ul class="fs-6 mb-3">
+                        <li>Identificação e visualização de locais suspeitos;</li>
+                        <li>Análise dos dados para melhor compreensão dos locais suspeitos;</li>
+                        <li>Compartilhamento de informações com autoridades governamentais responsáveis pelo combate ao mosquito;</li>
+                    </ul>
+                    <li class="fs-5">Compartilhamento de Informações</li>
+                    <p>Podemos compartilhar suas informações pessoais ou dos locais suspeitos com:</p>
+                    <ul class="fs-6 mb-3">
+                        <li>Prefeituras dos municípios;</li>
+                        <li>Secretarias de Saúde dos municípios;</li>
+                        <li>Centro de Controle de Zoonoses dos municípios;</li>
+                    </ul>
+                    <li class="fs-5">Armazenamento e Segurança</li>
+                    <p>Mantemos medidas de segurança técnicas, administrativas e físicas para proteger suas informações contra acesso não autorizado, divulgação, alteração ou destruição.</p>
+                    <li class="fs-5">Seus Direitos</li>
+                    <p>Você tem direito a acessar, corrigir ou excluir suas informações pessoais. Você também pode optar por não receber comunicações deste serviço a qualquer momento.</p>
+                    <li class="fs-5">Alterações nesta Política</li>
+                    <p>Esta Política de Privacidade está sujeita a alterações. Quaisquer alterações serão publicadas nesta página.</p>
+                    <li class="fs-5">Contato</li>
+                    <p>Se você tiver dúvidas sobre esta Política de Privacidade ou desejar exercer seus direitos de privacidade, entre em contato conosco através dos seguintes meios:</p>
+                    <ul style="list-style-type: none; margin:0; padding: 0;">
+                        <li><b>Projeto Integrador:</b> Desenvolvido por alunos dos cursos de Bacharelado em Tecnologia da Informação, Bacharelado em Ciências de Dados e Engenharia da Computação.</li>
+                        <li><b>UNIVESP</b> Universidade Virtual do Estado de São Paulo</li>
+                        <li><b>Polos: </b>Jacareí, São José dos Campos (Santana e Parque de Inovação Tecnológica)</li>
+                        <li><b>Email: </b><a href="mailto:2201726@aluno.univesp.br">2201726@aluno.univesp.br</a></li>
+                    </ul>
+            </div>
+        </div>
+    </div>
+    <div class="form-check mx-3 mt-3 fw-medium" style="min-height: fit-content;">
+        {{ form.as_p }}
+    </div>
+    <div class="modal-footer">
+        {% if voltar %}
+        <button type="button" class="btn rounded-pill btn-secondary" hx-get="{% url voltar %}" hx-target="#dialog">Voltar</button>
+        {% else %}
+        <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        {% endif %}
+        <button type="submit" class="btn rounded-pill btn-primary">Registrar</button>
+    </div>
+</form>
+<script>
+    const termos = document.getElementById('id_termos')
+    if (termos) termos.focus()
+</script>

@@ -1,0 +1,25 @@
+<form hx-post="{{ request.path }}" class="modal-content">
+    <style>
+        .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
+    </style>
+    {% csrf_token %}
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar um local</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body d-flex" style="min-height: 340px">
+        <h1 class="col-form-label fs-2 fw-bold"><i class="bi bi-{{ icone }} me-2"></i>{{ titulo }}</h1>
+        <p>(Opcional) Se possível, adicione uma foto do local suspeito. Isso pode auxiliar significativamente nas ações de combate ao mosquito.</p>
+        <div class="d-flex flex-grow-1 align-self-center">
+            <button type="button mt-4" class="d-flex m-auto btn rounded-pill btn-primary">Adicionar foto</button>
+        </div>
+    </div>
+    <div class="modal-footer">
+        {% if voltar %}
+        <button type="button" class="btn rounded-pill btn-secondary" hx-get="{% url voltar %}" hx-target="#dialog">Voltar</button>
+        {% else %}
+        <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        {% endif %}
+        <button type="submit" class="btn rounded-pill btn-primary">Continuar</button>
+    </div>
+</form>
