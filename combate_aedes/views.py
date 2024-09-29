@@ -4,7 +4,7 @@ from .forms import ValidarCep, ValidarNumero, ValidarTelefone, ValidarDescricao,
 
 # Crie suas visualizações aqui.
 
-# Exibe página princibal do sistema
+# Exibe a página principal
 def home(request):
     return render(request, 'home.html')
 
@@ -104,7 +104,7 @@ def validar_descricao(request):
         else:
             return render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'validar_telefone', 'icone': 'clipboard-plus-fill' })
 
-# Validar a Política e cria o registro no banco de dados
+# Valida a Política e cria o registro no banco de dados
 def validar_politica(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarPolitica()
@@ -137,7 +137,7 @@ def validar_politica(request):
         else:
             return render(request, 'politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'validar_descricao', 'icone': 'shield-fill-check' })
 
-# Adicionar foto
+# Adiciona uma foto
 def adicionar_foto(request):
     if request.method == "POST":
         request.path = "aceitar_politica"
