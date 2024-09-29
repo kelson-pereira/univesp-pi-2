@@ -32,8 +32,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", default=secrets.token_urlsafe(n
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # AVISO DE SEGURANÇA: não execute com o debug ativado na produção!
-if not IS_HEROKU_APP:
-    DEBUG = True
+#if not IS_HEROKU_APP:
+#    DEBUG = True
+DEBUG = True
 
 # Na Heroku, é seguro usar um curinga para `ALLOWED_HOSTS`, pois o roteador Heroku realiza 
 # a validação do cabeçalho Host na solicitação HTTP recebida. Em outras plataformas,
