@@ -8,113 +8,138 @@ from .forms import ValidarCep, ValidarNumero, ValidarTelefone, ValidarDescricao,
 def home(request):
     return render(request, 'home.html')
 
-# Verifica estado do form
-def estado_form(request):
-    if 'form' in request.session:
-        if request.session['form'] == 'validado':
-            request.session['form'] = 'inicial'
-    else:
-        request.session.clear()
-        request.session['form'] = 'inicial'
-    if request.method == "POST" and request.session['form'] == 'validar':
-        return True
-    else:
-        return False
-
 # Valida o CEP
 def validar_cep(request):
-    if estado_form(request):
+    # GET e estado inicial
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        # entregar o formulário vazio
+        form = ValidarCep()
+        form.initial.setdefault('cep', request.COOKIES.get('cep'))
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill' })
+        # define o cookie para validar
+        response.set_cookie('form', 'validar')
+        return response
+    # POST e estado validar
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
+        # verifica se o valor digitado é válido
         form = ValidarCep(request.POST)
         if form.is_valid():
-            request.session['form'] = 'validado'
-            request.session['cep'] = form.cleaned_data['cep']
-            request.path = "validar_numero"
-            return validar_numero(request)
-    else:
-        form = ValidarCep()
-        if 'cep' in request.session:
-            form.initial.setdefault('cep', request.session['cep'])
-        request.session['form'] = 'validar'
-    return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill' })
+            # validado
+            cep = form.cleaned_data['cep']
+            form = ValidarNumero()
+            request.path = 'validar_numero'
+            form.initial.setdefault('numero', request.COOKIES.get('numero'))
+            response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill' })
+            # define o cookie para o cep
+            response.set_cookie('cep', cep)
+            # define o cookie para inicial
+            response.set_cookie('form', 'validar')
+            # encaminha para o próximo form
+            return response
+        else:
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill' })
 
 # Valida o Número
 def validar_numero(request):
-    if estado_form(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        form = ValidarNumero()
+        form.initial.setdefault('numero', request.COOKIES.get('numero'))
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill' })
+        response.set_cookie('form', 'validar')
+        return response
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
         form = ValidarNumero(request.POST)
         if form.is_valid():
-            request.session['form'] = 'validado'
-            request.session['numero'] = form.cleaned_data['numero']
-            request.path = "validar_telefone"
-            return validar_telefone(request)
-    else:
-        form = ValidarNumero()
-        if 'numero' in request.session:
-            form.initial.setdefault('numero', request.session['numero'])
-        request.session['form'] = 'validar'
-    return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill' })
+            numero = form.cleaned_data['numero']
+            form = ValidarTelefone()
+            request.path = 'validar_telefone'
+            form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
+            response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'validar_numero', 'icone': 'telephone-fill' })
+            response.set_cookie('numero', numero)
+            response.set_cookie('form', 'validar')
+            return response
+        else:
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill' })
 
-# Valida o Telefone
+# Valida o Telefone NOVA
 def validar_telefone(request):
-    if estado_form(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        form = ValidarTelefone()
+        form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'validar_numero', 'icone': 'telephone-fill' })
+        response.set_cookie('form', 'validar')
+        return response
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
         form = ValidarTelefone(request.POST)
         if form.is_valid():
-            request.session['form'] = 'validado'
-            request.session['telefone'] = form.cleaned_data['telefone']
-            request.path = "validar_descricao"
-            return validar_descricao(request)
-    else:
-        form = ValidarTelefone()
-        if 'telefone' in request.session:
-            form.initial.setdefault('telefone', request.session['telefone'])
-        request.session['form'] = 'validar'
-    return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'validar_numero', 'icone': 'telephone-fill' })
+            telefone = form.cleaned_data['telefone']
+            form = ValidarDescricao()
+            request.path = 'validar_descricao'
+            form.initial.setdefault('descricao', request.COOKIES.get('descricao'))
+            response = render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'validar_telefone', 'icone': 'clipboard-plus-fill' })
+            response.set_cookie('telefone', telefone)
+            response.set_cookie('form', 'validar')
+            return response
+        else:
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'validar_numero', 'icone': 'telephone-fill' })
 
-# Valida a Descrição
+# Valida a Descrição NOVA
 def validar_descricao(request):
-    if estado_form(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        form = ValidarDescricao()
+        form.initial.setdefault('descricao', request.COOKIES.get('descricao'))
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'validar_telefone', 'icone': 'clipboard-plus-fill' })
+        response.set_cookie('form', 'validar')
+        return response
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
         form = ValidarDescricao(request.POST)
         if form.is_valid():
-            request.session['form'] = 'validado'
-            request.session['descricao'] = form.cleaned_data['descricao']
-            request.path = "aceitar_politica"
-            return aceitar_politica(request)
-    else:
-        form = ValidarDescricao()
-        if 'descricao' in request.session:
-            form.initial.setdefault('descricao', request.session['descricao'])
-        request.session['form'] = 'validar'
-    return render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'validar_telefone', 'icone': 'clipboard-plus-fill' })
+            descricao = form.cleaned_data['descricao']
+            form = ValidarPolitica()
+            request.path = 'validar_politica'
+            response = render(request, 'politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'validar_descricao', 'icone': 'shield-fill-check' })
+            response.set_cookie('descricao', descricao)
+            response.set_cookie('form', 'validar')
+            return response
+        else:
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'validar_telefone', 'icone': 'clipboard-plus-fill' })
+
+# Validar a Política e cria o registro no banco de dados
+def validar_politica(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        form = ValidarPolitica()
+        form.initial.setdefault('termos', request.COOKIES.get('termos'))
+        response = render(request, 'politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'validar_descricao', 'icone': 'shield-fill-check' })
+        response.set_cookie('form', 'validar')
+        return response
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
+        form = ValidarPolitica(request.POST)
+        if form.is_valid():
+            try:
+                # cria o registro no banco de dados
+                registro = Registro()
+                registro.cep = request.COOKIES.get('cep')
+                registro.numero = request.COOKIES.get('numero')
+                registro.telefone = request.COOKIES.get('telefone')
+                registro.descricao = request.COOKIES.get('descricao')
+                registro.termos = form.cleaned_data['termos']
+                registro.save()
+                # retorna para a tela registrar e limpa os cookies
+                response = render(request, 'registrar.html', {"mensagem": "Registro salvo com sucesso!"})
+                response.delete_cookie('cep')
+                response.delete_cookie('numero')
+                response.delete_cookie('telefone')
+                response.delete_cookie('descricao')
+                response.delete_cookie('form')
+                return response
+            except:
+                return render(request, 'registrar.html', {"mensagem": "Erro ao salvar o registro"})
+        else:
+            return render(request, 'politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'validar_descricao', 'icone': 'shield-fill-check' })
 
 # Adicionar foto
 def adicionar_foto(request):
     if request.method == "POST":
         request.path = "aceitar_politica"
-        return aceitar_politica(request)
+        return validar_politica(request)
     return render(request, 'foto.html', {'titulo': 'Adicionar uma foto:', 'voltar': 'validar_descricao', 'icone': 'camera-fill' })
-
-# Aceitar os termos e salva o registro no banco de dados.
-def aceitar_politica(request):
-    if estado_form(request):
-        form = ValidarPolitica(request.POST)
-        if form.is_valid():
-            try:
-                request.session['form'] = 'validado'
-                request.session['termos'] = form.cleaned_data['termos']
-                registro = Registro()
-                registro.cep = request.session['cep']
-                registro.numero = request.session['numero']
-                registro.telefone = request.session['telefone']
-                registro.descricao = request.session['descricao']
-                registro.termos = form.cleaned_data['termos']
-                registro.save()
-                request.session.clear()
-                mensagem = "Registro salvo com sucesso!"
-            except:
-                mensagem = "Erro ao salvar o registro"
-            return render(request, 'registrar.html', {"mensagem": mensagem})
-    else:
-        form = ValidarPolitica()
-        if 'termos' in request.session:
-            form.initial.setdefault('termos', request.session['termos'])
-        request.session['form'] = 'validar'
-    return render(request, 'politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'validar_descricao', 'icone': 'shield-fill-check' })
