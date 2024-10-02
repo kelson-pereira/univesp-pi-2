@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .models import Registro
 from .forms import ValidarCep, ValidarNumero, ValidarTelefone, ValidarDescricao, ValidarPolitica
 import brazilcep
-import googlemaps
+# import googlemaps
 
 google_api_key = settings.GOOGLE_API_KEY
 google_map_id = settings.GOOGLE_MAP_ID
@@ -16,7 +16,7 @@ def home(request):
 
 def obtem_endereco(cep):
     # verificar se o cep existe
-    gmaps = googlemaps.Client(key=google_api_key)
+    # gmaps = googlemaps.Client(key=google_api_key)
     try:
         endereco = brazilcep.get_address_from_cep(cep)
         return True, f"{endereco['street']}, {endereco['district']} - {endereco['city']}/{endereco['uf']}"

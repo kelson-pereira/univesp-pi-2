@@ -1,7 +1,9 @@
 asgiref==3.8.1
+brazilcep==6.5.0
 dj-database-url==2.2.0
 Django==5.1.1
 django-heroku==0.3.1
+geopy==2.4.1
 googlemaps==4.10.0
 gunicorn>=22,<23
 psycopg2==2.9.9
