@@ -1,12 +1,36 @@
+from django.conf import settings
 from django.shortcuts import render
 from .models import Registro
 from .forms import ValidarCep, ValidarNumero, ValidarTelefone, ValidarDescricao, ValidarPolitica
+import googlemaps
+
+google_api_key = settings.GOOGLE_API_KEY
+google_map_id = settings.GOOGLE_MAP_ID
 
 # Crie suas visualizações aqui.
 
 # Exibe a página principal
 def home(request):
     return render(request, 'home.html')
+
+def obtem_endereco(cep):
+    # verificar se o cep existe
+    gmaps = googlemaps.Client(key=google_api_key)
+    try:
+        resultado = gmaps.geocode(f"{cep}, Brasil")
+        componentes = resultado[0]['address_components']
+        for componente in componentes:
+            if 'route' in componente['types']:
+                logradouro = componente['long_name']
+            elif 'sublocality' in componente['types']:
+                bairro = componente['long_name']
+            elif 'administrative_area_level_2' in componente['types']:
+                cidade = componente['long_name']
+            elif 'administrative_area_level_1' in componente['types']:
+                estado = componente['short_name']
+        return True, f"{logradouro}, {bairro} - {cidade}/{estado}"
+    except:
+        return False, ""
 
 # Valida o CEP
 def validar_cep(request):
@@ -26,12 +50,17 @@ def validar_cep(request):
         if form.is_valid():
             # validado
             cep = form.cleaned_data['cep']
+            cep_encontrado, endereco = obtem_endereco(cep)
+            if not cep_encontrado:
+                return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill', 'cep_invalido': 'CEP não encontrado.' })
             form = ValidarNumero()
             request.path = 'validar_numero'
             form.initial.setdefault('numero', request.COOKIES.get('numero'))
-            response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill' })
+            response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
             # define o cookie para o cep
             response.set_cookie('cep', cep)
+            # define o cookie para o endereco
+            response.set_cookie('endereco', endereco)
             # define o cookie para inicial
             response.set_cookie('form', 'validar')
             # encaminha para o próximo form
@@ -41,10 +70,11 @@ def validar_cep(request):
 
 # Valida o Número
 def validar_numero(request):
+    endereco = request.COOKIES.get('endereco')
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarNumero()
         form.initial.setdefault('numero', request.COOKIES.get('numero'))
-        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill' })
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
         response.set_cookie('form', 'validar')
         return response
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
@@ -59,7 +89,7 @@ def validar_numero(request):
             response.set_cookie('form', 'validar')
             return response
         else:
-            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill' })
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
 
 # Valida o Telefone NOVA
 def validar_telefone(request):
@@ -130,6 +160,7 @@ def validar_politica(request):
                 response.delete_cookie('numero')
                 response.delete_cookie('telefone')
                 response.delete_cookie('descricao')
+                response.delete_cookie('endereco')
                 response.delete_cookie('form')
                 return response
             except:

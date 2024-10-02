@@ -13,18 +13,30 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 import secrets
 from pathlib import Path
+from dotenv import load_dotenv
+
 import dj_database_url
 import django_heroku
 
+# Carrega variáveis de ambiente do arquivo .env
+load_dotenv()
+
 # Cria caminhos dentro do projeto como: BASE_DIR/'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Configurações de desenvolvimento de início rápido – inadequadas para produção
 # Consulte https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # AVISO DE SEGURANÇA: mantenha em segredo a chave secreta usada na produção!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", default=secrets.token_urlsafe(nbytes=64))
+
+# Obtem o valor da variável de ambiente GOOGLE_API_KEY (recomendado usar .env).
+# Também pode ser definida abaixo em <GOOGLE_API_KEY> (recomendado apenas para testes).
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY", "<GOOGLE_API_KEY>")
+
+# Obtem o valor da variável de ambiente GOOGLE_MAP_ID (recomendado usar .env).
+# Também pode ser definida abaixo em <GOOGLE_MAP_ID> (recomendado apenas para testes).
+GOOGLE_MAP_ID = os.environ.get("GOOGLE_MAP_ID", "<GOOGLE_MAP_ID>")
 
 # A variável de ambiente `DYNO` está definida na Heroku CI, mas não é um aplicativo Heroku real,
 # então também temos que excluir explicitamente o CI:

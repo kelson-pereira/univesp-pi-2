@@ -20,11 +20,18 @@ Projeto Integrador em Computação II - Grupo 15
 
 `pip3 install --upgrade django-heroku --break-system-packages`
 
+`pip3 install --upgrade googlemaps --break-system-packages`
+
+`pip3 install --upgrade python-dotenv --break-system-packages`
+
 `pip3 install --upgrade pytest-django --break-system-packages`
 
 `pip3 install --upgrade pytest-cov --break-system-packages`
 
+
 ### Comandos de inicialização do projeto:
+
+`pip3 freeze`
 
 `django-admin startproject univesp_pi_2`
 
