@@ -2,6 +2,7 @@ from django.conf import settings
 from django.shortcuts import render
 from .models import Registro
 from .forms import ValidarCep, ValidarNumero, ValidarTelefone, ValidarDescricao, ValidarPolitica
+import brazilcep
 import googlemaps
 
 google_api_key = settings.GOOGLE_API_KEY
@@ -17,18 +18,8 @@ def obtem_endereco(cep):
     # verificar se o cep existe
     gmaps = googlemaps.Client(key=google_api_key)
     try:
-        resultado = gmaps.geocode(f"{cep}, Brasil")
-        componentes = resultado[0]['address_components']
-        for componente in componentes:
-            if 'route' in componente['types']:
-                logradouro = componente['long_name']
-            elif 'sublocality' in componente['types']:
-                bairro = componente['long_name']
-            elif 'administrative_area_level_2' in componente['types']:
-                cidade = componente['long_name']
-            elif 'administrative_area_level_1' in componente['types']:
-                estado = componente['short_name']
-        return True, f"{logradouro}, {bairro} - {cidade}/{estado}"
+        endereco = brazilcep.get_address_from_cep(cep)
+        return True, f"{endereco['street']}, {endereco['district']} - {endereco['city']}/{endereco['uf']}"
     except:
         return False, ""
 
