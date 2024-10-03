@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .models import Registro
 from .forms import ValidarCep, ValidarNumero, ValidarTelefone, ValidarDescricao, ValidarPolitica
 import brazilcep
-# import googlemaps
+import googlemaps
 
 google_api_key = settings.GOOGLE_API_KEY
 google_map_id = settings.GOOGLE_MAP_ID
@@ -16,12 +16,21 @@ def home(request):
 
 def obtem_endereco(cep):
     # verificar se o cep existe
-    # gmaps = googlemaps.Client(key=google_api_key)
     try:
         endereco = brazilcep.get_address_from_cep(cep)
-        return True, f"{endereco['street']}, {endereco['district']} - {endereco['city']}/{endereco['uf']}"
+        # return True, f"{endereco['street']}, {endereco['district']} - {endereco['city']}/{endereco['uf']}"
+        return True, endereco['street'], endereco['district'], endereco['city'], endereco['uf']
     except:
-        return False, ""
+        return False, "", "", "", ""
+
+def obtem_coordenadas(logradouro, numero, cidade, estado):
+    gmaps = googlemaps.Client(key=google_api_key)
+    try:
+        geocode_result = gmaps.geocode(f"{logradouro}, {numero}, {cidade}, {estado}, Brasil")
+        return True, geocode_result[0]['geometry']['location']['lat'], geocode_result[0]['geometry']['location']['lng']
+    except:
+        return False, "", ""
+
 
 # Valida o CEP
 def validar_cep(request):
@@ -41,7 +50,8 @@ def validar_cep(request):
         if form.is_valid():
             # validado
             cep = form.cleaned_data['cep']
-            cep_encontrado, endereco = obtem_endereco(cep)
+            cep_encontrado, logradouro, bairro, cidade, estado = obtem_endereco(cep)
+            endereco = f"{logradouro}, {bairro} - {cidade}/{estado}"
             if not cep_encontrado:
                 return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill', 'cep_invalido': 'CEP não encontrado.' })
             form = ValidarNumero()
@@ -50,8 +60,14 @@ def validar_cep(request):
             response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
             # define o cookie para o cep
             response.set_cookie('cep', cep)
-            # define o cookie para o endereco
-            response.set_cookie('endereco', endereco)
+            # define o cookie para o logradouro
+            response.set_cookie('logradouro', logradouro)
+            # define o cookie para o bairro
+            response.set_cookie('bairro', bairro)
+            # define o cookie para o cidade
+            response.set_cookie('cidade', cidade)
+            # define o cookie para o estado
+            response.set_cookie('estado', estado)
             # define o cookie para inicial
             response.set_cookie('form', 'validar')
             # encaminha para o próximo form
@@ -61,7 +77,11 @@ def validar_cep(request):
 
 # Valida o Número
 def validar_numero(request):
-    endereco = request.COOKIES.get('endereco')
+    logradouro = request.COOKIES.get('logradouro')
+    bairro = request.COOKIES.get('bairro')
+    cidade = request.COOKIES.get('cidade')
+    estado = request.COOKIES.get('estado')
+    endereco = f"{logradouro}, {bairro} - {cidade}/{estado}"
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarNumero()
         form.initial.setdefault('numero', request.COOKIES.get('numero'))
@@ -72,11 +92,16 @@ def validar_numero(request):
         form = ValidarNumero(request.POST)
         if form.is_valid():
             numero = form.cleaned_data['numero']
+            coord_encontradas, latitude, longitude = obtem_coordenadas(logradouro, numero, cidade, estado)
+            if not coord_encontradas:
+                return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o numero:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'mensagem_erro': 'Coordenadas não encontradas.' })
             form = ValidarTelefone()
             request.path = 'validar_telefone'
             form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
             response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'validar_numero', 'icone': 'telephone-fill' })
             response.set_cookie('numero', numero)
+            response.set_cookie('latitude', latitude)
+            response.set_cookie('longitude', longitude)
             response.set_cookie('form', 'validar')
             return response
         else:
@@ -140,18 +165,30 @@ def validar_politica(request):
                 # cria o registro no banco de dados
                 registro = Registro()
                 registro.cep = request.COOKIES.get('cep')
+                registro.endereco = request.COOKIES.get('logradouro')
                 registro.numero = request.COOKIES.get('numero')
+                registro.bairro = request.COOKIES.get('bairro')
+                registro.cidade = request.COOKIES.get('cidade')
+                registro.estado = request.COOKIES.get('estado')
                 registro.telefone = request.COOKIES.get('telefone')
                 registro.descricao = request.COOKIES.get('descricao')
+                registro.latitude = request.COOKIES.get('latitude')
+                registro.longitude = request.COOKIES.get('longitude')
                 registro.termos = form.cleaned_data['termos']
                 registro.save()
                 # retorna para a tela registrar e limpa os cookies
                 response = render(request, 'registrar.html', {"mensagem": "Registro salvo com sucesso!"})
                 response.delete_cookie('cep')
+                response.delete_cookie('logradouro')
                 response.delete_cookie('numero')
+                response.delete_cookie('bairro')
+                response.delete_cookie('cidade')
+                response.delete_cookie('estado')
                 response.delete_cookie('telefone')
                 response.delete_cookie('descricao')
                 response.delete_cookie('endereco')
+                response.delete_cookie('latitude')
+                response.delete_cookie('longitude')
                 response.delete_cookie('form')
                 return response
             except:

@@ -9,8 +9,8 @@
     </div>
     <div class="modal-body" style="touch-action: pan-y;">
         <h1 class="col-form-label fs-2 fw-bold"><i class="bi bi-{{ icone }} me-2"></i>{{ titulo }}</h1>
-        {% if cep_invalido %}
-            <div class="bg-danger bg-opacity-25 rounded text-dark p-2 mb-2">{{ cep_invalido }}</div>
+        {% if mensagem_erro %}
+            <div class="bg-danger bg-opacity-25 rounded text-dark p-2 mb-2">{{ mensagem_erro }}</div>
         {% endif %}
         {% if endereco %}
             <div class="bg-success bg-opacity-25 rounded text-dark  p-2 mb-2">{{ endereco }}</div>
