@@ -95,14 +95,12 @@ def validar_numero(request):
             coord_encontradas, latitude, longitude = obtem_coordenadas(logradouro, numero, cidade, estado)
             if not coord_encontradas:
                 return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o numero:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'mensagem_erro': 'Coordenadas não encontradas.' })
-            form = ValidarTelefone()
             request.path = 'validar_telefone'
-            form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
-            response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'validar_numero', 'icone': 'telephone-fill' })
+            response = render(request, 'localizacao.html', {'voltar': 'validar_numero', 'google_api_key': google_api_key, 'google_map_id': google_map_id, 'latitude': str(latitude), 'longitude': str(longitude)})
             response.set_cookie('numero', numero)
             response.set_cookie('latitude', latitude)
             response.set_cookie('longitude', longitude)
-            response.set_cookie('form', 'validar')
+            response.set_cookie('form', 'inicial')
             return response
         else:
             return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
@@ -202,3 +200,15 @@ def adicionar_foto(request):
         request.path = "aceitar_politica"
         return validar_politica(request)
     return render(request, 'foto.html', {'titulo': 'Adicionar uma foto:', 'voltar': 'validar_descricao', 'icone': 'camera-fill' })
+
+# Valida a localização
+def validar_localizacao(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        latitude = request.COOKIES.get('latitude')
+        longitude = request.COOKIES.get('longitude')
+        return render(request, 'localizacao.html', {'voltar': 'validar_numero', 'google_api_key': google_api_key, 'google_map_id': google_map_id, 'latitude': latitude, 'longitude': longitude})
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
+        request.path = 'validar_telefone'
+        form = ValidarTelefone()
+        form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
+        return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'validar_numero', 'icone': 'telephone-fill' })
