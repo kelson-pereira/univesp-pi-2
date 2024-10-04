@@ -14,15 +14,30 @@ google_map_id = settings.GOOGLE_MAP_ID
 def home(request):
     return render(request, 'home.html')
 
+# Verifica se o CEP existe
 def obtem_endereco(cep):
-    # verificar se o cep existe
     try:
-        endereco = brazilcep.get_address_from_cep(cep)
-        # return True, f"{endereco['street']}, {endereco['district']} - {endereco['city']}/{endereco['uf']}"
-        return True, endereco['street'], endereco['district'], endereco['city'], endereco['uf']
+        gmaps = googlemaps.Client(key=google_api_key)
+        resultado = gmaps.geocode(f"{cep}, Brasil")
+        componentes = resultado[0]['address_components']
+        for componente in componentes:
+            if 'route' in componente['types']:
+                logradouro = componente['long_name']
+            elif 'sublocality' in componente['types']:
+                bairro = componente['long_name']
+            elif 'administrative_area_level_2' in componente['types']:
+                cidade = componente['long_name']
+            elif 'administrative_area_level_1' in componente['types']:
+                estado = componente['short_name']
+        return True, logradouro, bairro, cidade, estado
     except:
-        return False, "", "", "", ""
+        try:
+            endereco = brazilcep.get_address_from_cep(cep)
+            return True, endereco['street'], endereco['district'], endereco['city'], endereco['uf']
+        except:
+            return False, "", "", "", ""
 
+# Obtém as Coordenadas Geográficas (latitude e longitude)
 def obtem_coordenadas(logradouro, numero, cidade, estado):
     gmaps = googlemaps.Client(key=google_api_key)
     try:
