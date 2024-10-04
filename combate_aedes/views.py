@@ -190,7 +190,7 @@ def validar_politica(request):
                 registro.termos = form.cleaned_data['termos']
                 registro.save()
                 # retorna para a tela registrar e limpa os cookies
-                response = render(request, 'registrar.html', {"mensagem": "Registro salvo com sucesso!"})
+                response = render(request, 'registro.html', {"mensagem": "Registro salvo com sucesso!"})
                 response.delete_cookie('cep')
                 response.delete_cookie('logradouro')
                 response.delete_cookie('numero')
@@ -205,7 +205,7 @@ def validar_politica(request):
                 response.delete_cookie('form')
                 return response
             except:
-                return render(request, 'registrar.html', {"mensagem": "Erro ao salvar o registro"})
+                return render(request, 'registro.html', {"mensagem": "Erro ao salvar o registro"})
         else:
             return render(request, 'politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'validar_descricao', 'icone': 'shield-fill-check' })
 
