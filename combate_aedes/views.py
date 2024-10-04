@@ -12,7 +12,7 @@ google_map_id = settings.GOOGLE_MAP_ID
 
 # Exibe a página principal
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html', {'google_api_key': google_api_key})
 
 # Verifica se o CEP existe
 def obtem_endereco(cep):
