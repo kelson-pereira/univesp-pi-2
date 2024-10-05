@@ -68,7 +68,7 @@ def validar_cep(request):
             cep_encontrado, logradouro, bairro, cidade, estado = obtem_endereco(cep)
             endereco = f"{logradouro}, {bairro} - {cidade}/{estado}"
             if not cep_encontrado:
-                return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill', 'cep_invalido': 'CEP não encontrado.' })
+                return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill', 'mensagem_erro': 'CEP não encontrado.' })
             form = ValidarNumero()
             request.path = 'validar_numero'
             form.initial.setdefault('numero', request.COOKIES.get('numero'))

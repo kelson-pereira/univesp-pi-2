@@ -1,6 +1,8 @@
-<form hx-post="{{ request.path }}" class="modal-content">
+<form hx-post="{{ request.path }}" hx-indicator="#loader" class="modal-content">
     <style>
         .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
+        .spinner-border {display: none;}
+        .spinner-border.htmx-request {display: inline-block}
     </style>
     {% csrf_token %}
     <div class="modal-header">
@@ -23,6 +25,9 @@
         {% else %}
         <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         {% endif %}
-        <button type="submit" class="btn rounded-pill btn-primary">Continuar</button>
+        <button type="submit" class="btn rounded-pill btn-primary">
+            <span id="loader" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span>Continuar</span>
+        </button>
     </div>
 </form>
