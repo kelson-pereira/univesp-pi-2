@@ -11,14 +11,14 @@
         <div class="d-flex flex-column flex-grow-1">
             {% for registro in registros %}
             <div class="d-flex flex-row align-items-center border-bottom py-2">
-                <div class="rounded bg-secondary-subtle p-2">
+                <div style="width: 50px" class="rounded bg-secondary-subtle p-2">
                     <img src="{% static 'imagens/favicon.svg' %}" class="img-fluid" style="width: 30px">
                 </div>
-                <div class="mx-3 flex-grow-1">
+                <div class="mx-3 flex-grow-1" style="flex: 1; min-width: 0;">
                     <div class="fw-medium lh-sm"><small>{{registro.endereco}}, {{registro.numero}}</small></div>
-                    <div class="lh-sm w-75" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><small class="text-body-secondary">{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}{% if registro.descricao %} • {{registro.descricao}}{% endif %}</small></div>
+                    <div class="lh-sm" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><small class="text-body-secondary">{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}{% if registro.descricao %} • {{registro.descricao}}{% endif %}</small></div>
                 </div>
-                <h4><i class="bi bi-trash3-fill text-primary"></i></h4>
+                <h4 style="width: 30px"><i class="bi bi-trash3-fill text-primary"></i></h4>
             </div>
             {% endfor %}
         </div>

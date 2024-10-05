@@ -40,10 +40,11 @@ def obtem_endereco(cep):
             return False, "", "", "", ""
 
 # Obtém as Coordenadas Geográficas (latitude e longitude)
-def obtem_coordenadas(logradouro, numero, cidade, estado):
+def obtem_coordenadas(logradouro, numero, bairro, cidade, estado):
     gmaps = googlemaps.Client(key=google_api_key)
     try:
-        geocode_result = gmaps.geocode(f"{logradouro}, {numero}, {cidade}, {estado}, Brasil")
+        print(f"{logradouro}, {numero}, {bairro}, {cidade}, {estado}, Brasil")
+        geocode_result = gmaps.geocode(f"{logradouro}, {numero}, {bairro}, {cidade}, {estado}, Brasil")
         return True, geocode_result[0]['geometry']['location']['lat'], geocode_result[0]['geometry']['location']['lng']
     except:
         return False, "", ""
@@ -109,7 +110,7 @@ def validar_numero(request):
         form = ValidarNumero(request.POST)
         if form.is_valid():
             numero = form.cleaned_data['numero']
-            coord_encontradas, latitude, longitude = obtem_coordenadas(logradouro, numero, cidade, estado)
+            coord_encontradas, latitude, longitude = obtem_coordenadas(logradouro, numero, bairro, cidade, estado)
             if not coord_encontradas:
                 return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o numero:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'mensagem_erro': 'Coordenadas não encontradas.' })
             request.path = 'validar_telefone'
