@@ -17,7 +17,7 @@ def home(request):
 # Verifica se o CEP existe
 def obtem_endereco(cep):
     try:
-        gmaps = googlemaps.Client(key=google_api_key)
+        gmaps = googlemaps.Client(key=google_api_key, timeout=5)
         resultado = gmaps.geocode(f"{cep}, Brasil")
         componentes = resultado[0]['address_components']
         for componente in componentes:
@@ -32,7 +32,7 @@ def obtem_endereco(cep):
         return True, logradouro, bairro, cidade, estado
     except:
         try:
-            endereco = brazilcep.get_address_from_cep(cep)
+            endereco = brazilcep.get_address_from_cep(cep, timeout=5)
             return True, endereco['street'], endereco['district'], endereco['city'], endereco['uf']
         except:
             return False, "", "", "", ""
