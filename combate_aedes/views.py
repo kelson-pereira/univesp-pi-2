@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.shortcuts import render
+from django.utils import timezone
+from datetime import timedelta
 from .models import Registro
-from .forms import ValidarCep, ValidarNumero, ValidarTelefone, ValidarDescricao, ValidarPolitica
+from .forms import *
 import brazilcep
 import googlemaps
 
@@ -227,3 +229,8 @@ def validar_localizacao(request):
         form = ValidarTelefone()
         form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
         return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'validar_numero', 'icone': 'telephone-fill' })
+
+def meus_registros(request):
+    forty_days = timezone.now() - timedelta(days = 40)
+    registros = {'registros': Registro.objects.filter(datahora__gte=forty_days).values('ident', 'datahora', 'endereco', 'numero', 'descricao')}
+    return render(request, 'meus_registros.html', registros)

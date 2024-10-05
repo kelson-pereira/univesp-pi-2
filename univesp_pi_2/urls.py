@@ -27,5 +27,5 @@ urlpatterns = [
     path('validar_telefone', views.validar_telefone, name='validar_telefone'),
     path('validar_descricao', views.validar_descricao, name='validar_descricao'),
     path('validar_politica', views.validar_politica, name='validar_politica'),
-    path('adicionar_foto', views.adicionar_foto, name='adicionar_foto'),
+    path('meus_registros', views.meus_registros, name='meus_registros'),
 ]
