@@ -43,7 +43,6 @@ def obtem_endereco(cep):
 def obtem_coordenadas(logradouro, numero, bairro, cidade, estado):
     gmaps = googlemaps.Client(key=google_api_key)
     try:
-        print(f"{logradouro}, {numero}, {bairro}, {cidade}, {estado}, Brasil")
         geocode_result = gmaps.geocode(f"{logradouro}, {numero}, {bairro}, {cidade}, {estado}, Brasil")
         return True, geocode_result[0]['geometry']['location']['lat'], geocode_result[0]['geometry']['location']['lng']
     except:
@@ -54,7 +53,7 @@ def obtem_coordenadas(logradouro, numero, bairro, cidade, estado):
 def validar_cep(request):
     # GET e estado inicial
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
-        # entregar o formulário vazio
+        # entrega o formulário vazio
         form = ValidarCep()
         form.initial.setdefault('cep', request.COOKIES.get('cep'))
         response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill' })
@@ -66,7 +65,7 @@ def validar_cep(request):
         # verifica se o valor digitado é válido
         form = ValidarCep(request.POST)
         if form.is_valid():
-            # validado
+            # a estrutura do cep é validada
             cep = form.cleaned_data['cep']
             cep_encontrado, logradouro, bairro, cidade, estado = obtem_endereco(cep)
             endereco = f"{logradouro}, {bairro} - {cidade}/{estado}"
@@ -200,7 +199,7 @@ def validar_politica(request):
                 response.delete_cookie('bairro')
                 response.delete_cookie('cidade')
                 response.delete_cookie('estado')
-                response.delete_cookie('telefone')
+                #response.delete_cookie('telefone')
                 response.delete_cookie('descricao')
                 response.delete_cookie('endereco')
                 response.delete_cookie('latitude')
