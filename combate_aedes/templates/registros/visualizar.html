@@ -1,0 +1,48 @@
+<form hx-post="{{ request.path }}" hx-indicator="#loader" class="modal-content">
+    <style>
+        .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
+        .spinner-border {display: none;}
+        .spinner-border.htmx-request {display: inline-block}
+    </style>
+    {% csrf_token %}
+    <div class="modal-header">
+        <div class="d-flex flex-column">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ registro.endereco }}, {{ registro.numero }}</h1>
+            <div class="text-body-secondary"><small>{{registro.bairro}}, {{registro.cidade}}/{{registro.estado}}</small></div>
+            <div class="text-body-secondary lh-sm"><small>{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}{% if registro.descricao %} • <span title="{{registro.descricao}}">{{registro.descricao}}</span>{% endif %}</small></div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body d-flex p-0">
+        <div class="d-flex flex-grow-1 w-100" id="mapa"></div>
+    </div>
+    <div class="modal-footer">
+        {% if voltar %}
+        <button type="button" class="btn rounded-pill btn-secondary" hx-get="{% url voltar %}" hx-target="#dialog">Voltar</button>
+        {% else %}
+        <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        {% endif %}
+        <button type="button" class="btn rounded-pill btn-danger" hx-get="{% url 'registros_apagar' ident=registro.ident %}" hx-target="#dialog">
+            <span id="loader" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span>Apagar</span>
+        </button>
+    </div>
+</form>
+<script>
+    async function iniciarMapa() {
+        const { Map } = await google.maps.importLibrary("maps");
+        const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+        console.log('{{ latitude }}');
+        console.log('{{ longitude }}');
+        let latitude = parseFloat('{{ latitude }}');
+        let longitude = parseFloat('{{ longitude }}');
+        let centro = {lat: latitude, lng: longitude};
+        console.log(centro)
+        let mapa = new google.maps.Map(document.getElementById("mapa"), {zoom: 18, center: centro, mapId: "DEMO_MAP_ID", disableDefaultUI: true,});
+        const marker = new google.maps.marker.AdvancedMarkerElement({
+            position: { lat: latitude, lng: longitude },
+            map: mapa,
+        });
+    }
+    iniciarMapa();
+</script>

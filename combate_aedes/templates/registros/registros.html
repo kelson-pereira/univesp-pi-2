@@ -2,24 +2,28 @@
 <div class="modal-content">
     <style>
         .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
+        .registro {cursor: pointer;}
+        .registro:last-child {border-bottom: 0 !important;}
     </style>
     <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Meus registros</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
-    <div class="modal-body d-flex pt-0">
+    <div class="modal-body d-flex py-0">
         {% if registros %}
         <div class="w-100">
             {% for registro in registros %}
-            <div class="d-flex flex-row align-items-center border-bottom py-2">
-                <div class="rounded bg-secondary-subtle p-2" style="flex-shrink: 0">
-                    <img src="{% static 'imagens/favicon.svg' %}" class="img-fluid" style="width: 30px">
+            <div class="registro border-bottom py-2" hx-get="{% url 'registros_visualizar' ident=registro.ident %}" hx-target="#dialog">
+                <div class="d-flex flex-row align-items-center">
+                    <div class="rounded bg-secondary-subtle p-2" style="flex-shrink: 0">
+                        <img src="{% static 'imagens/favicon.svg' %}" class="img-fluid" style="width: 30px">
+                    </div>
+                    <div class="mx-3 flex-grow-1 align-self-start" style="min-width: 0;">
+                        <div class="text-body fw-medium lh-sm"><small>{{registro.endereco}}, {{registro.numero}}</small></div>
+                        <div class="text-body-secondary lh-sm" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><small>{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}{% if registro.descricao %} • <span title="{{registro.descricao}}">{{registro.descricao}}</span>{% endif %}</small></div>
+                    </div>
+                    <button class="btn btn-link btn-lg icon-link icon-link-hover px-2"><i class="bi bi-chevron-right text-primary" style="height:unset; --bs-icon-link-transform: translate3d(0, -.2rem, 0);"></i></button>
                 </div>
-                <div class="mx-3 flex-grow-1 align-self-start" style="min-width: 0;">
-                    <div class="fw-medium lh-sm"><small>{{registro.endereco}}, {{registro.numero}}</small></div>
-                    <div class="lh-sm" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><small class="text-body-secondary">{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}{% if registro.descricao %} • {{registro.descricao}}{% endif %}</small></div>
-                </div>
-                <h4 class="mb-0"><i class="bi bi-trash3-fill text-primary"></i></h4>
             </div>
             {% endfor %}
         </div>

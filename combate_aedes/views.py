@@ -223,7 +223,7 @@ def registrar_localizacao(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         latitude = request.COOKIES.get('latitude')
         longitude = request.COOKIES.get('longitude')
-        return render(request, 'registrar/localizacao.html', {'voltar': 'registrar_numero', 'google_api_key': google_api_key, 'google_map_id': google_map_id, 'latitude': latitude, 'longitude': longitude})
+        return render(request, 'registrar/localizacao.html', {'voltar': 'registrar_numero', 'google_map_id': google_map_id, 'latitude': latitude, 'longitude': longitude })
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
         request.path = 'registrar_telefone'
         form = ValidarTelefone()
@@ -232,5 +232,16 @@ def registrar_localizacao(request):
 
 def registros(request):
     forty_days = timezone.now() - timedelta(days = 40)
-    registros = {'registros': Registro.objects.filter(datahora__gte=forty_days).values('ident', 'datahora', 'endereco', 'numero', 'descricao')}
-    return render(request, 'registros/registros.html', registros)
+    registros = Registro.objects.filter(datahora__gte=forty_days).values('ident', 'datahora', 'endereco', 'numero', 'descricao')
+    return render(request, 'registros/registros.html', {"registros": registros})
+
+def registros_visualizar(request, ident):
+    registro = Registro.objects.get(ident=ident)
+    latitude = str(registro.latitude)
+    longitude = str(registro.longitude)
+    return render(request, 'registros/visualizar.html', {"registro": registro, 'voltar': 'registros', 'google_map_id': google_map_id, 'latitude': latitude, 'longitude': longitude })
+
+def registros_apagar(request, ident):
+    registro = Registro.objects.get(ident=ident)
+    registro.delete()
+    return registros(request)
