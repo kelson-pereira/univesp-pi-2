@@ -8,6 +8,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body d-flex pt-0">
+        {% if registros %}
         <div class="w-100">
             {% for registro in registros %}
             <div class="d-flex flex-row align-items-center border-bottom py-2">
@@ -22,6 +23,11 @@
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <div class="d-flex flex-grow-1 justify-content-center align-self-center">
+            Nenhum registro encontrado.
+        </div>
+        {% endif %}
     </div>
     <div class="modal-footer">
         <button type="button" class="btn rounded-pill btn-primary" data-bs-dismiss="modal">Fechar</button>

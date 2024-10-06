@@ -50,7 +50,7 @@ def obtem_coordenadas(logradouro, numero, bairro, cidade, estado):
 
 
 # Valida o CEP
-def validar_cep(request):
+def registrar_cep(request):
     # GET e estado inicial
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         # entrega o formulário vazio
@@ -72,9 +72,9 @@ def validar_cep(request):
             if not cep_encontrado:
                 return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill', 'mensagem_erro': 'CEP não encontrado.' })
             form = ValidarNumero()
-            request.path = 'validar_numero'
+            request.path = 'registrar_numero'
             form.initial.setdefault('numero', request.COOKIES.get('numero'))
-            response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
+            response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'registrar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
             # define o cookie para o cep
             response.set_cookie('cep', cep)
             # define o cookie para o logradouro
@@ -93,7 +93,7 @@ def validar_cep(request):
             return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill' })
 
 # Valida o Número
-def validar_numero(request):
+def registrar_numero(request):
     logradouro = request.COOKIES.get('logradouro')
     bairro = request.COOKIES.get('bairro')
     cidade = request.COOKIES.get('cidade')
@@ -102,7 +102,7 @@ def validar_numero(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarNumero()
         form.initial.setdefault('numero', request.COOKIES.get('numero'))
-        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'registrar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
         response.set_cookie('form', 'validar')
         return response
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
@@ -111,23 +111,23 @@ def validar_numero(request):
             numero = form.cleaned_data['numero']
             coord_encontradas, latitude, longitude = obtem_coordenadas(logradouro, numero, bairro, cidade, estado)
             if not coord_encontradas:
-                return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o numero:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'mensagem_erro': 'Coordenadas não encontradas.' })
-            request.path = 'validar_telefone'
-            response = render(request, 'localizacao.html', {'voltar': 'validar_numero', 'google_api_key': google_api_key, 'google_map_id': google_map_id, 'latitude': str(latitude), 'longitude': str(longitude)})
+                return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o numero:', 'voltar': 'registrar_cep', 'icone': 'signpost-fill', 'mensagem_erro': 'Coordenadas não encontradas.' })
+            request.path = 'registrar_telefone'
+            response = render(request, 'registrar/localizacao.html', {'voltar': 'registrar_numero', 'google_api_key': google_api_key, 'google_map_id': google_map_id, 'latitude': str(latitude), 'longitude': str(longitude)})
             response.set_cookie('numero', numero)
             response.set_cookie('latitude', latitude)
             response.set_cookie('longitude', longitude)
             response.set_cookie('form', 'inicial')
             return response
         else:
-            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'validar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'registrar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
 
 # Valida o Telefone NOVA
-def validar_telefone(request):
+def registrar_telefone(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarTelefone()
         form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
-        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'validar_numero', 'icone': 'telephone-fill' })
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'registrar_numero', 'icone': 'telephone-fill' })
         response.set_cookie('form', 'validar')
         return response
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
@@ -135,21 +135,21 @@ def validar_telefone(request):
         if form.is_valid():
             telefone = form.cleaned_data['telefone']
             form = ValidarDescricao()
-            request.path = 'validar_descricao'
+            request.path = 'registrar_descricao'
             form.initial.setdefault('descricao', request.COOKIES.get('descricao'))
-            response = render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'validar_telefone', 'icone': 'clipboard-plus-fill' })
+            response = render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'registrar_telefone', 'icone': 'clipboard-plus-fill' })
             response.set_cookie('telefone', telefone)
             response.set_cookie('form', 'validar')
             return response
         else:
-            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'validar_numero', 'icone': 'telephone-fill' })
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'registrar_numero', 'icone': 'telephone-fill' })
 
 # Valida a Descrição NOVA
-def validar_descricao(request):
+def registrar_descricao(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarDescricao()
         form.initial.setdefault('descricao', request.COOKIES.get('descricao'))
-        response = render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'validar_telefone', 'icone': 'clipboard-plus-fill' })
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'registrar_telefone', 'icone': 'clipboard-plus-fill' })
         response.set_cookie('form', 'validar')
         return response
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
@@ -157,20 +157,20 @@ def validar_descricao(request):
         if form.is_valid():
             descricao = form.cleaned_data['descricao']
             form = ValidarPolitica()
-            request.path = 'validar_politica'
-            response = render(request, 'politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'validar_descricao', 'icone': 'shield-fill-check' })
+            request.path = 'registrar_politica'
+            response = render(request, 'registrar/politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'registrar_descricao', 'icone': 'shield-fill-check' })
             response.set_cookie('descricao', descricao)
             response.set_cookie('form', 'validar')
             return response
         else:
-            return render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'validar_telefone', 'icone': 'clipboard-plus-fill' })
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'registrar_telefone', 'icone': 'clipboard-plus-fill' })
 
 # Valida a Política e cria o registro no banco de dados
-def validar_politica(request):
+def registrar_politica(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarPolitica()
         form.initial.setdefault('termos', request.COOKIES.get('termos'))
-        response = render(request, 'politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'validar_descricao', 'icone': 'shield-fill-check' })
+        response = render(request, 'registrar/politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'registrar_descricao', 'icone': 'shield-fill-check' })
         response.set_cookie('form', 'validar')
         return response
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
@@ -192,7 +192,7 @@ def validar_politica(request):
                 registro.termos = form.cleaned_data['termos']
                 registro.save()
                 # retorna para a tela registrar e limpa os cookies
-                response = render(request, 'registro.html', {"mensagem": "Registro salvo com sucesso!"})
+                response = render(request, 'registrar/registro.html', {"mensagem": "Registro salvo com sucesso!"})
                 response.delete_cookie('cep')
                 response.delete_cookie('logradouro')
                 response.delete_cookie('numero')
@@ -207,30 +207,30 @@ def validar_politica(request):
                 response.delete_cookie('form')
                 return response
             except:
-                return render(request, 'registro.html', {"mensagem": "Erro ao salvar o registro"})
+                return render(request, 'registrar/registro.html', {"mensagem": "Erro ao salvar o registro"})
         else:
-            return render(request, 'politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'validar_descricao', 'icone': 'shield-fill-check' })
+            return render(request, 'registrar/politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'registrar_descricao', 'icone': 'shield-fill-check' })
 
 # Adiciona uma foto
 def adicionar_foto(request):
     if request.method == "POST":
         request.path = "aceitar_politica"
-        return validar_politica(request)
-    return render(request, 'foto.html', {'titulo': 'Adicionar uma foto:', 'voltar': 'validar_descricao', 'icone': 'camera-fill' })
+        return registrar_politica(request)
+    return render(request, 'registrar/foto.html', {'titulo': 'Adicionar uma foto:', 'voltar': 'registrar_descricao', 'icone': 'camera-fill' })
 
 # Valida a localização
-def validar_localizacao(request):
+def registrar_localizacao(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         latitude = request.COOKIES.get('latitude')
         longitude = request.COOKIES.get('longitude')
-        return render(request, 'localizacao.html', {'voltar': 'validar_numero', 'google_api_key': google_api_key, 'google_map_id': google_map_id, 'latitude': latitude, 'longitude': longitude})
+        return render(request, 'registrar/localizacao.html', {'voltar': 'registrar_numero', 'google_api_key': google_api_key, 'google_map_id': google_map_id, 'latitude': latitude, 'longitude': longitude})
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
-        request.path = 'validar_telefone'
+        request.path = 'registrar_telefone'
         form = ValidarTelefone()
         form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
-        return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'validar_numero', 'icone': 'telephone-fill' })
+        return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'registrar_numero', 'icone': 'telephone-fill' })
 
-def meus_registros(request):
+def registros(request):
     forty_days = timezone.now() - timedelta(days = 40)
     registros = {'registros': Registro.objects.filter(datahora__gte=forty_days).values('ident', 'datahora', 'endereco', 'numero', 'descricao')}
-    return render(request, 'meus_registros.html', registros)
+    return render(request, 'registros/registros.html', registros)

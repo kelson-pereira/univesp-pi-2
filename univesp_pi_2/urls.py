@@ -21,11 +21,11 @@ from combate_aedes import views
 urlpatterns = [
     #path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('validar_cep', views.validar_cep, name='validar_cep'),
-    path('validar_numero', views.validar_numero, name='validar_numero'),
-    path('validar_localizacao', views.validar_localizacao, name='validar_localizacao'),
-    path('validar_telefone', views.validar_telefone, name='validar_telefone'),
-    path('validar_descricao', views.validar_descricao, name='validar_descricao'),
-    path('validar_politica', views.validar_politica, name='validar_politica'),
-    path('meus_registros', views.meus_registros, name='meus_registros'),
+    path('registrar_cep', views.registrar_cep, name='registrar_cep'),
+    path('registrar_numero', views.registrar_numero, name='registrar_numero'),
+    path('registrar_localizacao', views.registrar_localizacao, name='registrar_localizacao'),
+    path('registrar_telefone', views.registrar_telefone, name='registrar_telefone'),
+    path('registrar_descricao', views.registrar_descricao, name='registrar_descricao'),
+    path('registrar_politica', views.registrar_politica, name='registrar_politica'),
+    path('registros', views.registros, name='registros'),
 ]
