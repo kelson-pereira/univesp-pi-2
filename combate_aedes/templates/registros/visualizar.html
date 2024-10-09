@@ -12,7 +12,7 @@
                 <button type="button" class="btn-close flex-shrink-0" data-bs-dismiss="modal" aria-label="Close" style="padding-top: 18px;"></button>
             </div>
             <div class="text-body-secondary lh-sm"><small>{{registro.bairro}}, {{registro.cidade}}/{{registro.estado}}, {{ registro.cep|slice:"0:5" }}-{{ registro.cep|slice:"5:8" }}</small></div>
-            <div class="text-body-secondary lh-sm"><small><span class="fw-semibold">{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}</span>{% if registro.descricao %} • <span title="{{registro.descricao}}">{{registro.descricao}}</span>{% endif %}</small></div>
+            <div class="text-body-secondary lh-sm"><small><i class="bi bi-calendar2-fill me-1 text-secondary"></i><span>{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}</span>{% if registro.descricao %} • <span>{{registro.descricao}}</span>{% endif %}</small></div>
         </div>
     </div>
     <div class="modal-body d-flex p-0">
