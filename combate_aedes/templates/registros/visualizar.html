@@ -34,12 +34,9 @@
     async function iniciarMapa() {
         const { Map } = await google.maps.importLibrary("maps");
         const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
-        console.log('{{ latitude }}');
-        console.log('{{ longitude }}');
         let latitude = parseFloat('{{ latitude }}');
         let longitude = parseFloat('{{ longitude }}');
         let centro = {lat: latitude, lng: longitude};
-        console.log(centro)
         let mapa = new google.maps.Map(document.getElementById("mapa"), {zoom: 18, center: centro, mapId: "DEMO_MAP_ID", disableDefaultUI: true,});
         const marker = new google.maps.marker.AdvancedMarkerElement({
             position: { lat: latitude, lng: longitude },
