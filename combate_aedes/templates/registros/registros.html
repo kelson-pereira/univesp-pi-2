@@ -9,7 +9,7 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel">Meus registros</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
-    <div class="modal-body d-flex py-0">
+    <div class="modal-body d-flex py-0" style="min-height: 340px">
         {% if registros %}
         <div class="w-100">
             {% for registro in registros %}
@@ -34,6 +34,6 @@
         {% endif %}
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn rounded-pill btn-primary" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn rounded-pill btn-secondary" hx-get="{% url voltar %}" hx-target="#dialog">Voltar</button>
     </div>
 </div>

@@ -122,7 +122,7 @@ def registrar_numero(request):
         else:
             return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'registrar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
 
-# Valida o Telefone NOVA
+# Valida o Telefone
 def registrar_telefone(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarTelefone()
@@ -230,10 +230,31 @@ def registrar_localizacao(request):
         form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
         return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'registrar_numero', 'icone': 'telephone-fill' })
 
+# Obtem o Telefone
+def registros_telefone(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        form = ValidarTelefone()
+        form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'icone': 'telephone-fill' })
+        response.set_cookie('form', 'validar')
+        return response
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
+        form = ValidarTelefone(request.POST)
+        if form.is_valid():
+            telefone = form.cleaned_data['telefone']
+            forty_days = timezone.now() - timedelta(days = 40)
+            registros = Registro.objects.filter(datahora__gte=forty_days, telefone=telefone).values('ident', 'datahora', 'endereco', 'numero', 'descricao')
+            response = render(request, 'registros/registros.html', {"registros": registros, 'voltar': 'registros_telefone',})
+            response.set_cookie('telefone', telefone)
+            return response
+        else:
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'icone': 'telephone-fill' })
+
 def registros(request):
     forty_days = timezone.now() - timedelta(days = 40)
-    registros = Registro.objects.filter(datahora__gte=forty_days).values('ident', 'datahora', 'endereco', 'numero', 'descricao')
-    return render(request, 'registros/registros.html', {"registros": registros})
+    telefone = request.COOKIES.get('telefone')
+    registros = Registro.objects.filter(datahora__gte=forty_days, telefone=telefone).values('ident', 'datahora', 'endereco', 'numero', 'descricao')
+    return render(request, 'registros/registros.html', {"registros": registros, 'voltar': 'registros_telefone',})
 
 def registros_visualizar(request, ident):
     registro = Registro.objects.get(ident=ident)

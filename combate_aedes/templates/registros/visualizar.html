@@ -6,12 +6,14 @@
     </style>
     {% csrf_token %}
     <div class="modal-header">
-        <div class="d-flex flex-column">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ registro.endereco }}, {{ registro.numero }}</h1>
+        <div class="d-flex flex-column w-100">
+            <div class="d-flex flex-row justify-content-between">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">{{ registro.endereco }}, {{ registro.numero }}</h1>
+                <button type="button" class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close" style="margin-top: -2px; padding-left: 12px;"></button>
+            </div>
             <div class="text-body-secondary"><small>{{registro.bairro}}, {{registro.cidade}}/{{registro.estado}}, {{ registro.cep|slice:"0:5" }}-{{ registro.cep|slice:"5:8" }}</small></div>
             <div class="text-body-secondary lh-sm"><small>{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}{% if registro.descricao %} • <span title="{{registro.descricao}}">{{registro.descricao}}</span>{% endif %}</small></div>
         </div>
-        <button type="button" class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close" style="margin-top: -2px;"></button>
     </div>
     <div class="modal-body d-flex p-0">
         <div class="d-flex flex-grow-1 w-100" id="mapa" style="min-height: 340px;"></div>
