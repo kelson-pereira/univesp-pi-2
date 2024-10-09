@@ -235,7 +235,7 @@ def registros_telefone(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarTelefone()
         form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
-        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'icone': 'telephone-fill' })
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'icone': 'telephone-fill', 'header': 'Meus registros' })
         response.set_cookie('form', 'validar')
         return response
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
@@ -244,11 +244,11 @@ def registros_telefone(request):
             telefone = form.cleaned_data['telefone']
             forty_days = timezone.now() - timedelta(days = 40)
             registros = Registro.objects.filter(datahora__gte=forty_days, telefone=telefone).values('ident', 'datahora', 'endereco', 'numero', 'descricao')
-            response = render(request, 'registros/registros.html', {"registros": registros, 'voltar': 'registros_telefone',})
+            response = render(request, 'registros/registros.html', {"registros": registros, 'voltar': 'registros_telefone' })
             response.set_cookie('telefone', telefone)
             return response
         else:
-            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'icone': 'telephone-fill' })
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'icone': 'telephone-fill', 'header': 'Meus registros' })
 
 def registros(request):
     forty_days = timezone.now() - timedelta(days = 40)

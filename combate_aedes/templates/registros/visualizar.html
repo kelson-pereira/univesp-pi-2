@@ -5,14 +5,14 @@
         .spinner-border.htmx-request {display: inline-block}
     </style>
     {% csrf_token %}
-    <div class="modal-header">
+    <div class="modal-header align-items-start" style="padding-top: 18px;">
         <div class="d-flex flex-column w-100">
-            <div class="d-flex flex-row justify-content-between">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">{{ registro.endereco }}, {{ registro.numero }}</h1>
-                <button type="button" class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close" style="margin-top: -2px; padding-left: 12px;"></button>
+            <div class="d-flex flex-row">
+                <h1 class="modal-title fs-5 lh-sm" style="margin-right: 8px;">{{ registro.endereco }}, {{ registro.numero }}</h1>
+                <button type="button" class="btn-close flex-shrink-0" data-bs-dismiss="modal" aria-label="Close" style="padding-top: 18px;"></button>
             </div>
-            <div class="text-body-secondary"><small>{{registro.bairro}}, {{registro.cidade}}/{{registro.estado}}, {{ registro.cep|slice:"0:5" }}-{{ registro.cep|slice:"5:8" }}</small></div>
-            <div class="text-body-secondary lh-sm"><small>{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}{% if registro.descricao %} • <span title="{{registro.descricao}}">{{registro.descricao}}</span>{% endif %}</small></div>
+            <div class="text-body-secondary lh-sm"><small>{{registro.bairro}}, {{registro.cidade}}/{{registro.estado}}, {{ registro.cep|slice:"0:5" }}-{{ registro.cep|slice:"5:8" }}</small></div>
+            <div class="text-body-secondary lh-sm"><small><span class="fw-semibold">{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}</span>{% if registro.descricao %} • <span title="{{registro.descricao}}">{{registro.descricao}}</span>{% endif %}</small></div>
         </div>
     </div>
     <div class="modal-body d-flex p-0">
