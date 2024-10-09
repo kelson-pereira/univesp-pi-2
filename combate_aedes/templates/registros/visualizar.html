@@ -15,7 +15,7 @@
             <div class="text-body-secondary lh-sm"><small><i class="bi bi-calendar2-fill me-1 text-secondary"></i><span>{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}</span>{% if registro.descricao %} • <span>{{registro.descricao}}</span>{% endif %}</small></div>
         </div>
     </div>
-    <div class="modal-body d-flex p-0">
+    <div class="modal-body d-flex p-0" style="touch-action: pan-y;">
         <div class="d-flex flex-grow-1 w-100" id="mapa" style="min-height: 340px;"></div>
     </div>
     <div class="modal-footer">

@@ -6,10 +6,10 @@
         .registro:last-child {border-bottom: 0 !important;}
     </style>
     <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Meus registros</h1>
+        <h1 class="modal-title fs-5">Meus registros</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
-    <div class="modal-body d-flex py-0" style="min-height: 340px">
+    <div class="modal-body d-flex py-0" style="touch-action: pan-y; min-height: 340px">
         {% if registros %}
         <div class="w-100">
             {% for registro in registros %}
