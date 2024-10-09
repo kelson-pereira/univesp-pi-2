@@ -31,9 +31,9 @@
         let latitude = parseFloat('{{ latitude }}');
         let longitude = parseFloat('{{ longitude }}');
         let centro = {lat: latitude, lng: longitude};
-        let mapa = new google.maps.Map(document.getElementById("mapa"), {zoom: 18, center: centro, mapId: "DEMO_MAP_ID", disableDefaultUI: true,});
+        let mapa = new google.maps.Map(document.getElementById("mapa"), { zoom: 18, center: centro, mapId: "DEMO_MAP_ID", disableDefaultUI: true });
         const marker = new google.maps.marker.AdvancedMarkerElement({
-            position: { lat: latitude, lng: longitude },
+            position: centro,
             map: mapa,
         });
     }
