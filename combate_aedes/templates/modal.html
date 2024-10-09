@@ -1,4 +1,4 @@
-<form hx-post="{{ request.path }}" hx-indicator="#loader" class="modal-content">
+<form hx-post="{{ request.path }}" hx-indicator="#loader" class="modal-content" style="min-height: 420px;">
     <style>
         .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
         .spinner-border {display: none;}
@@ -13,7 +13,7 @@
         {% endif %}
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
-    <div class="modal-body" style="touch-action: pan-y; min-height: 340px">
+    <div class="modal-body" style="touch-action: pan-y;>
         <h1 class="col-form-label fs-2 fw-bold"><i class="bi bi-{{ icone }} me-2"></i>{{ titulo }}</h1>
         {% if mensagem_erro %}
             <div class="bg-danger bg-opacity-25 rounded fw-medium text-dark p-2 mb-2">{{ mensagem_erro }}</div>

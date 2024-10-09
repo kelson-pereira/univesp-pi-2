@@ -1,5 +1,5 @@
 {% load static %}
-<div class="modal-content">
+<div class="modal-content" style="min-height: 420px;">
     <style>
         .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
         .registro {cursor: pointer;}
@@ -9,7 +9,7 @@
         <h1 class="modal-title fs-5">Meus registros</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
-    <div class="modal-body d-flex py-0" style="touch-action: pan-y; min-height: 340px">
+    <div class="modal-body d-flex py-0" style="touch-action: pan-y;">
         {% if registros %}
         <div class="w-100">
             {% for registro in registros %}
