@@ -40,10 +40,10 @@ def obtem_endereco(cep):
             return False, "", "", "", ""
 
 # Obtém as Coordenadas Geográficas (latitude e longitude)
-def obtem_coordenadas(logradouro, numero, bairro, cidade, estado):
+def obtem_coordenadas(logradouro, numero, bairro, cidade, estado, pais="Brasil"):
     gmaps = googlemaps.Client(key=google_api_key)
     try:
-        geocode_result = gmaps.geocode(f"{logradouro}, {numero}, {bairro}, {cidade}, {estado}, Brasil")
+        geocode_result = gmaps.geocode(f"{logradouro}, {numero}, {bairro}, {cidade}, {estado}, {pais}")
         return True, geocode_result[0]['geometry']['location']['lat'], geocode_result[0]['geometry']['location']['lng']
     except:
         return False, "", ""
@@ -110,8 +110,6 @@ def registrar_numero(request):
         if form.is_valid():
             numero = form.cleaned_data['numero']
             coord_encontradas, latitude, longitude = obtem_coordenadas(logradouro, numero, bairro, cidade, estado)
-            if not coord_encontradas:
-                return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o numero:', 'voltar': 'registrar_cep', 'icone': 'signpost-fill', 'mensagem_erro': 'Coordenadas não encontradas.' })
             request.path = 'registrar_telefone'
             response = render(request, 'registrar/localizacao.html', {'voltar': 'registrar_numero', 'google_api_key': google_api_key, 'google_map_id': google_map_id, 'latitude': str(latitude), 'longitude': str(longitude)})
             response.set_cookie('numero', numero)
@@ -207,16 +205,18 @@ def registrar_politica(request):
                 response.delete_cookie('form')
                 return response
             except:
-                return render(request, 'registrar/registro.html', {"mensagem": "Erro ao salvar o registro"})
+                return render(request, 'registrar/registro.html', {"mensagem": "Erro ao salvar o registro."})
         else:
             return render(request, 'registrar/politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'registrar_descricao', 'icone': 'shield-fill-check' })
 
 # Adiciona uma foto
-def adicionar_foto(request):
-    if request.method == "POST":
-        request.path = "aceitar_politica"
-        return registrar_politica(request)
-    return render(request, 'registrar/foto.html', {'titulo': 'Adicionar uma foto:', 'voltar': 'registrar_descricao', 'icone': 'camera-fill' })
+def registrar_foto(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        response = render(request, 'registrar/foto.html', {'titulo': 'Adicionar uma foto:', 'voltar': 'registrar_foto', 'icone': 'camera-fill' })
+        response.set_cookie('form', 'validar')
+        return response
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
+        return render(request, 'registrar/foto.html', {'titulo': 'Privacidade:', 'voltar': 'registrar_foto', 'icone': 'camera-fill' })
 
 # Valida a localização
 def registrar_localizacao(request):

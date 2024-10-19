@@ -1,13 +1,13 @@
 from django.test import TestCase
-from ..models import Registro
+from combate_aedes.models import Registro
 
 # Crie seus testes aqui.
-class RegistroTestCase(TestCase):
+class ModelsTestCase(TestCase):
     
     def setUp(self):
         Registro.objects.create(
             cep="12345678",
-            numero=123,
+            numero="123",
             telefone="12987654321",
             termos=True
         )
@@ -18,7 +18,7 @@ class RegistroTestCase(TestCase):
 
     def test_registro_numero(self):
         registro = Registro.objects.get(ident=1)
-        self.assertEqual(registro.numero, 123)
+        self.assertEqual(registro.numero, "123")
 
     def test_registro_telefone(self):
         registro = Registro.objects.get(ident=1)

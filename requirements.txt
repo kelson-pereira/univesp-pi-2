@@ -1,5 +1,6 @@
 asgiref==3.8.1
 brazilcep==6.5.0
+coverage==7.6.3
 dj-database-url==2.2.0
 Django==5.1.1
 django-heroku==0.3.1

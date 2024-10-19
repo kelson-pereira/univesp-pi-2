@@ -22,11 +22,17 @@ Projeto Integrador em Computação II - Grupo 15
 
 `pip3 install --upgrade googlemaps --break-system-packages`
 
+`pip3 install --upgrade brazilcep --break-system-packages`
+
 `pip3 install --upgrade python-dotenv --break-system-packages`
 
 `pip3 install --upgrade pytest-django --break-system-packages`
 
 `pip3 install --upgrade pytest-cov --break-system-packages`
+
+`pip3 install --upgrade coverage --break-system-packages`
+
+#`pip3 install --upgrade pytest-cov --break-system-packages`
 
 
 ### Comandos de inicialização do projeto:
@@ -81,8 +87,16 @@ Projeto Integrador em Computação II - Grupo 15
 
 `cd univesp-pi-2`
 
-`pytest --ds=test.settings --cov=./`
+`coverage erase`
 
-`pytest --ds=test.settings --cov-report html --cov=./`
+`coverage run -m pytest tests`
+
+`coverage report`
+
+`coverage html`
+
+`pytest --cov`
+
+`pytest --cov-report html --cov`
 
 `python3 manage.py test`

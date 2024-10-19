@@ -26,6 +26,7 @@ urlpatterns = [
     path('registrar_localizacao', views.registrar_localizacao, name='registrar_localizacao'),
     path('registrar_telefone', views.registrar_telefone, name='registrar_telefone'),
     path('registrar_descricao', views.registrar_descricao, name='registrar_descricao'),
+    path('registrar_foto', views.registrar_foto, name='registrar_foto'),
     path('registrar_politica', views.registrar_politica, name='registrar_politica'),
     path('registros', views.registros, name='registros'),
     path('registros_telefone', views.registros_telefone, name='registros_telefone'),
