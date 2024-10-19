@@ -195,3 +195,7 @@ class ViewsTestCase(TestCase):
     def test_registros_apagar(self):
         response = self.client.get('/registros_apagar/1')
         self.assertEqual(response.status_code, 200)
+
+    def test_analise_mapa(self):
+        response = self.client.get('/analise_mapa')
+        self.assertEqual(response.status_code, 200)
