@@ -1,0 +1,59 @@
+<form hx-post="{{ request.path }}" hx-indicator="#loader" class="modal-content" style="min-height: 100%;">
+    <style>
+        .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
+        .spinner-border {display: none;}
+        .spinner-border.htmx-request {display: inline-block}
+    </style>
+    {% csrf_token %}
+    <div class="modal-header">
+        <h1 class="modal-title fs-5">Análise de dados</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body d-flex p-0" style="touch-action: pan-y;">
+        <div class="d-flex flex-grow-1 w-100" id="mapa"></div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn rounded-pill btn-primary">
+            <span id="loader" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span>Gerar Relatório</span>
+        </button>
+    </div>
+</form>
+<script>
+    async function iniciarMapa() {
+        const {HeatmapLayer, LatLng} = await google.maps.importLibrary("visualization");
+        let registros = JSON.parse('{{ registros | safe }}');
+        let dados = registros.map(registro => new google.maps.LatLng(registro["fields"].latitude, registro["fields"].longitude));
+
+        const { Map } = await google.maps.importLibrary("maps");
+        const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+        let latitude = parseFloat('{{ latitude }}');
+        let longitude = parseFloat('{{ longitude }}');
+        let centro = {lat: -23.218645849, lng: -45.89179548738};
+        let mapa = new google.maps.Map(document.getElementById("mapa"), { zoom: 12, center: centro, mapId: "DEMO_MAP_ID", disableDefaultUI: true });
+
+        let validade = document.createElement("span");
+        validade.textContent = "Últimos 40 dias";
+        validade.classList.add("badge", "rounded-pill", "fw-normal", "text-bg-primary", "me-2", "mb-1");
+        validade.style.fontSize = "12px";
+        let experimental = document.createElement("span");
+        experimental.textContent = "Experimental";
+        experimental.classList.add("badge", "rounded-pill", "fw-normal", "text-bg-danger", "me-2", "mb-1");
+        experimental.style.fontSize = "12px";
+        let rotulos = document.createElement("div");
+        rotulos.classList.add("w-50","d-flex","flex-wrap","justify-content-end","align-self-start","gap-1","mt-3");
+        rotulos.appendChild(validade);
+        rotulos.appendChild(experimental);
+        mapa.controls[google.maps.ControlPosition.TOP_RIGHT].push(rotulos);
+
+        let mapaCalor = new google.maps.visualization.HeatmapLayer({
+            data: dados
+        });
+        mapaCalor.setMap(mapa);
+        mapaCalor.set("radius", 30);
+        mapaCalor.set("maxIntensity", 3);
+    }
+    iniciarMapa();
+    document.getElementById("dialog").classList.add("modal-xl");
+</script>

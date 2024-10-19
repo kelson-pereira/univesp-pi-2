@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core import serializers
 from django.shortcuts import render
 from django.utils import timezone
 from datetime import timedelta
@@ -266,3 +267,8 @@ def registros_apagar(request, ident):
     registro = Registro.objects.get(ident=ident)
     registro.delete()
     return registros(request)
+
+def analise_mapa(request):
+    forty_days = timezone.now() - timedelta(days = 40)
+    registros = serializers.serialize("json", Registro.objects.filter(datahora__gte=forty_days), fields=["latitude", "longitude"])
+    return render(request, 'analise/mapa.html', {"registros": registros, 'google_map_id': google_map_id})

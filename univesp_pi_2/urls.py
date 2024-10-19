@@ -32,4 +32,5 @@ urlpatterns = [
     path('registros_telefone', views.registros_telefone, name='registros_telefone'),
     path('registros_visualizar/<int:ident>', views.registros_visualizar, name='registros_visualizar'),
     path('registros_apagar/<int:ident>', views.registros_apagar, name='registros_apagar'),
+    path('analise_mapa', views.analise_mapa, name='analise_mapa')
 ]
