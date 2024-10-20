@@ -28,23 +28,23 @@
         const { Map } = await google.maps.importLibrary("maps");
         const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
         let centro = {lat: -23.218645849, lng: -45.89179548738};
-        if (localStorage.getItem("lat")) {
-            centro = {lat: +localStorage.getItem("lat"), lng: +localStorage.getItem("lng")};
-        }
-        let mapa = new google.maps.Map(document.getElementById("mapa"), { zoom: 12, center: centro, mapId: "DEMO_MAP_ID", disableDefaultUI: true });
-        var successHandler = function(position) {
+        var obterLocalizacao = function(position) {
             localStorage.setItem("lat", position.coords.latitude);
             localStorage.setItem("lng", position.coords.longitude);
             mapa.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
         };
-        var errorHandler = function (errorObj) {
-            console.log(errorObj.code + ": " + errorObj.message);
+        var obterErro = function (erro) {
+            console.log(erro.code + ": " + erro.message);
         };
-        if (navigator.geolocation) {
+        if (localStorage.getItem("lat") && localStorage.getItem("lng")) {
+            centro = {lat: +localStorage.getItem("lat"), lng: +localStorage.getItem("lng")};
+        } else if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition( 
-                successHandler, errorHandler, {enableHighAccuracy: true, maximumAge: 10000}
+                obterLocalizacao, obterErro, {enableHighAccuracy: true, maximumAge: 10000}
             );
         }
+        let mapa = new google.maps.Map(document.getElementById("mapa"), { zoom: 12, center: centro, mapId: "DEMO_MAP_ID", disableDefaultUI: true });
+        
         let validade = document.createElement("span");
         validade.textContent = "Últimos 40 dias";
         validade.classList.add("badge", "rounded-pill", "fw-normal", "text-bg-primary", "ms-3", "mb-1");
