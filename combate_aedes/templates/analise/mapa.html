@@ -25,28 +25,33 @@
         const {HeatmapLayer, LatLng} = await google.maps.importLibrary("visualization");
         let registros = JSON.parse('{{ registros | safe }}');
         let dados = registros.map(registro => new google.maps.LatLng(registro["fields"].latitude, registro["fields"].longitude));
-
         const { Map } = await google.maps.importLibrary("maps");
         const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
-        let latitude = parseFloat('{{ latitude }}');
-        let longitude = parseFloat('{{ longitude }}');
         let centro = {lat: -23.218645849, lng: -45.89179548738};
+        if (localStorage.getItem("lat")) {
+            centro = {lat: +localStorage.getItem("lat"), lng: +localStorage.getItem("lng")};
+        }
         let mapa = new google.maps.Map(document.getElementById("mapa"), { zoom: 12, center: centro, mapId: "DEMO_MAP_ID", disableDefaultUI: true });
-
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                localStorage.setItem("lat", position.coords.latitude);
+                localStorage.setItem("lng", position.coords.longitude);
+                mapa.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+            });
+        }
         let validade = document.createElement("span");
         validade.textContent = "Últimos 40 dias";
-        validade.classList.add("badge", "rounded-pill", "fw-normal", "text-bg-primary", "me-2", "mb-1");
+        validade.classList.add("badge", "rounded-pill", "fw-normal", "text-bg-primary", "ms-3", "mb-1");
         validade.style.fontSize = "12px";
         let experimental = document.createElement("span");
         experimental.textContent = "Experimental";
-        experimental.classList.add("badge", "rounded-pill", "fw-normal", "text-bg-danger", "me-2", "mb-1");
+        experimental.classList.add("badge", "rounded-pill", "fw-normal", "text-bg-danger", "ms-3", "mb-1");
         experimental.style.fontSize = "12px";
         let rotulos = document.createElement("div");
-        rotulos.classList.add("w-50","d-flex","flex-wrap","justify-content-end","align-self-start","gap-1","mt-3");
+        rotulos.classList.add("w-50","d-flex","flex-wrap","justify-content-start","align-self-start","gap-1","mt-3");
         rotulos.appendChild(validade);
         rotulos.appendChild(experimental);
-        mapa.controls[google.maps.ControlPosition.TOP_RIGHT].push(rotulos);
-
+        mapa.controls[google.maps.ControlPosition.TOP_LEFT].push(rotulos);
         let mapaCalor = new google.maps.visualization.HeatmapLayer({
             data: dados
         });
