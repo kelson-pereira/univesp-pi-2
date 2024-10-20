@@ -32,12 +32,18 @@
             centro = {lat: +localStorage.getItem("lat"), lng: +localStorage.getItem("lng")};
         }
         let mapa = new google.maps.Map(document.getElementById("mapa"), { zoom: 12, center: centro, mapId: "DEMO_MAP_ID", disableDefaultUI: true });
+        var successHandler = function(position) {
+            localStorage.setItem("lat", position.coords.latitude);
+            localStorage.setItem("lng", position.coords.longitude);
+            mapa.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+        };
+        var errorHandler = function (errorObj) {
+            console.log(errorObj.code + ": " + errorObj.message);
+        };
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                localStorage.setItem("lat", position.coords.latitude);
-                localStorage.setItem("lng", position.coords.longitude);
-                mapa.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
-            });
+            navigator.geolocation.getCurrentPosition( 
+                successHandler, errorHandler, {enableHighAccuracy: true, maximumAge: 10000}
+            );
         }
         let validade = document.createElement("span");
         validade.textContent = "Últimos 40 dias";
