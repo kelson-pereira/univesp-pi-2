@@ -56,7 +56,7 @@ if IS_HEROKU_APP:
     ALLOWED_HOSTS = ['*']
     SECURE_SSL_REDIRECT = False
 else:
-    ALLOWED_HOSTS = ["127.0.0.1", "192.168.68.106"]
+    ALLOWED_HOSTS = ["127.0.0.1"]
 
 
 # Application definition

@@ -1,10 +1,28 @@
+
 from django.conf import settings
 from django.core import serializers
 from django.shortcuts import render
 from django.utils import timezone
-from datetime import timedelta
+from django.http import FileResponse
+from django.views.generic.base import RedirectView
+from datetime import datetime, timedelta
+from django.utils import formats
+from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm, inch
+from reportlab.lib import colors
+from reportlab.rl_config import defaultPageSize
+from reportlab.graphics import renderPDF, renderSVG
+from reportlab.graphics.shapes import Drawing
+from svglib.svglib import svg2rlg
+from reportlab.lib.utils import ImageReader
+from io import BytesIO
 from .models import Registro
 from .forms import *
+
 import brazilcep
 import googlemaps
 
@@ -12,6 +30,8 @@ google_api_key = settings.GOOGLE_API_KEY
 google_map_id = settings.GOOGLE_MAP_ID
 
 # Crie suas visualizações aqui.
+
+favicon = RedirectView.as_view(url='/static/imagens/favicon.ico', permanent=True)
 
 # Exibe a página principal
 def home(request):
@@ -272,3 +292,50 @@ def analise_mapa(request):
     forty_days = timezone.now() - timedelta(days = 40)
     registros = serializers.serialize("json", Registro.objects.filter(datahora__gte=forty_days), fields=["latitude", "longitude"])
     return render(request, 'analise/mapa.html', {"registros": registros, 'google_map_id': google_map_id})
+
+def cabecalho_rodape(canvas, doc):
+    canvas.saveState()
+    logo = Image('static/imagens/favicon.png', 1.3*cm, 1.3*cm)
+    titulo_s = ParagraphStyle(name='titulo', alignment=TA_LEFT, fontSize=16, leading=18)
+    titulo = Paragraph('<b>Combate ao mosquito</b><br/><i>Aedes aegypti</i>', titulo_s)
+    data_f = formats.date_format(datetime.now(), "DATETIME_FORMAT")
+    data_s = ParagraphStyle(name='data', alignment=TA_RIGHT, fontSize=12, leading=16)
+    data = Paragraph(f"Relatório gerado em:<br/>{data_f}", data_s)
+    cabecalho = Table([(logo, titulo, data)], colWidths=[1.5*cm, 8*cm, 9.5*cm], rowHeights=[1.5*cm])
+    cabecalho.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+        ('ALIGN', (1, 0), (1, 0), 'LEFT'),
+        ('ALIGN', (2, 0), (2, 0), 'RIGHT'),
+        ('BOX', (0,0), (-1,-1), 0.1, colors.white)
+    ]))
+    cabecalho.wrapOn(canvas, A4[0], 1.5*cm)
+    cabecalho.drawOn(canvas, 1*cm, A4[1]-2.5*cm)
+    rodape = Table([('UNIVESP', 'Projeto Integrador em Computação II', "Página %d" % doc.page)], colWidths=[6*cm, 7*cm, 6*cm], rowHeights=[1*cm])
+    rodape.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+        ('ALIGN', (1, 0), (1, 0), 'CENTER'),
+        ('ALIGN', (2, 0), (2, 0), 'RIGHT'),
+        ('BOX', (0,0), (-1,-1), 0.1, colors.white)
+    ]))
+    rodape.wrapOn(canvas, A4[0], 1*cm)
+    rodape.drawOn(canvas, 1 *cm, 1*cm)
+    canvas.restoreState()
+
+def analise_relatorio(request):
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=1*cm,
+                            leftMargin=1*cm, topMargin=3*cm, bottomMargin=2*cm)
+    corpo = []
+    styles = getSampleStyleSheet()
+    style = styles["Normal"]
+    forty_days = timezone.now() - timedelta(days = 40)
+    registros = Registro.objects.filter(datahora__gte=forty_days)
+    for registro in registros:
+        p = Paragraph((f"{registro.endereco}, {registro.numero}") *15, style)
+        corpo.append(p)
+        corpo.append(Spacer(1,0.5*cm))
+    doc.build(corpo, onFirstPage=cabecalho_rodape, onLaterPages=cabecalho_rodape)
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename="combate-aedes.pdf")

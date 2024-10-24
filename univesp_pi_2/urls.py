@@ -15,12 +15,13 @@ Incluindo outra configuração de URL:
     2. 
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from combate_aedes import views
 
 urlpatterns = [
     #path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    re_path(r'^favicon\.ico$', views.favicon),
     path('registrar_cep', views.registrar_cep, name='registrar_cep'),
     path('registrar_numero', views.registrar_numero, name='registrar_numero'),
     path('registrar_localizacao', views.registrar_localizacao, name='registrar_localizacao'),
@@ -32,5 +33,6 @@ urlpatterns = [
     path('registros_telefone', views.registros_telefone, name='registros_telefone'),
     path('registros_visualizar/<int:ident>', views.registros_visualizar, name='registros_visualizar'),
     path('registros_apagar/<int:ident>', views.registros_apagar, name='registros_apagar'),
-    path('analise_mapa', views.analise_mapa, name='analise_mapa')
+    path('analise_mapa', views.analise_mapa, name='analise_mapa'),
+    path('analise_relatorio', views.analise_relatorio, name='analise_relatorio'),
 ]

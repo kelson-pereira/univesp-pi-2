@@ -14,10 +14,10 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Fechar</button>
-        <button type="button" class="btn rounded-pill btn-primary">
+        <a href="{% url 'analise_relatorio' %}" class="btn rounded-pill btn-primary" role="button">
             <span id="loader" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-            <span>Gerar Relatório</span>
-        </button>
+            <span>Gerar relatório</span>
+        </a>
     </div>
 </form>
 <script>

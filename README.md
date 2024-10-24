@@ -32,8 +32,11 @@ Projeto Integrador em Computação II - Grupo 15
 
 `pip3 install --upgrade coverage --break-system-packages`
 
-#`pip3 install --upgrade pytest-cov --break-system-packages`
+`pip3 install --upgrade pytest-cov --break-system-packages`
 
+`pip3 install --upgrade reportlab --break-system-packages`
+
+`pip3 install --upgrade svglib --break-system-packages`
 
 ### Comandos de inicialização do projeto:
 
