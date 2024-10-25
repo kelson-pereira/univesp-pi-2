@@ -1,4 +1,3 @@
-
 from django.conf import settings
 from django.core import serializers
 from django.shortcuts import render
@@ -327,15 +326,20 @@ def analise_relatorio(request):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=1*cm,
                             leftMargin=1*cm, topMargin=3*cm, bottomMargin=2*cm)
-    corpo = []
-    styles = getSampleStyleSheet()
-    style = styles["Normal"]
     forty_days = timezone.now() - timedelta(days = 40)
     registros = Registro.objects.filter(datahora__gte=forty_days)
+    corpo = []
+    dados = []
     for registro in registros:
-        p = Paragraph((f"{registro.endereco}, {registro.numero}") *15, style)
-        corpo.append(p)
-        corpo.append(Spacer(1,0.5*cm))
+        dados.append([Paragraph(f"{registro.cidade}, {registro.estado}"), Paragraph(registro.bairro), Paragraph(f"{registro.endereco}, {registro.numero}")])
+    tabela = Table(dados, colWidths=[6*cm, 5*cm, 8*cm])
+    tabela.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+        ('INNERGRID',(0,0),(-1,-1),0.25,colors.grey),
+        ('BOX',(0,0),(-1,-1),0.25,colors.grey),
+    ]))
+    corpo.append(tabela)
     doc.build(corpo, onFirstPage=cabecalho_rodape, onLaterPages=cabecalho_rodape)
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename="combate-aedes.pdf")
