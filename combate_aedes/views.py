@@ -443,6 +443,7 @@ def analise_relatorio(request):
 def analise_estado(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = SelecionarEstado()
+        form.initial.setdefault('estado', request.COOKIES.get('estado'))
         response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione o estado:', 'icone': 'flag-fill', 'header': 'Análise de dados' })
         response.set_cookie('form', 'validar')
         return response
@@ -451,9 +452,11 @@ def analise_estado(request):
         if form.is_valid():
             estado = form.cleaned_data['estado']
             form = SelecionarCidade(estado=estado)
+            form.initial.setdefault('cidade', request.COOKIES.get('cidade'))
             request.path = 'analise_cidade'
             response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'flag-fill', 'header': 'Análise de dados' })
             response.set_cookie('estado', estado)
+            response.set_cookie('form', 'validar')
             return response
         else:
             return render(request, 'modal.html', {'form': form, 'titulo': 'Selecione o estado:', 'icone': 'flag-fill', 'header': 'Análise de dados' })
@@ -463,6 +466,7 @@ def analise_cidade(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         estado = request.COOKIES.get('estado')
         form = SelecionarCidade(estado=estado)
+        form.initial.setdefault('cidade', request.COOKIES.get('cidade'))
         response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'flag-fill', 'header': 'Análise de dados' })
         response.set_cookie('form', 'validar')
         return response
@@ -477,6 +481,7 @@ def analise_cidade(request):
             registros = serializers.serialize("json", Registro.objects.filter(datahora__gte=forty_days, estado=estado, cidade=cidade), fields=["latitude", "longitude"])
             response = render(request, 'analise/mapa.html', {"registros": registros, 'voltar': 'analise_cidade', 'google_map_id': google_map_id, 'latitude': str(latitude), 'longitude': str(longitude)})
             response.set_cookie('cidade', cidade)
+            response.set_cookie('form', 'validar')
             return response
         else:
             return render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'flag-fill', 'header': 'Análise de dados' })
