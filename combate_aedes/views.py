@@ -1,23 +1,21 @@
 from django.conf import settings
 from django.core import serializers
+from django.db.models import Count
 from django.shortcuts import render
 from django.utils import timezone
 from django.http import FileResponse
 from django.views.generic.base import RedirectView
 from datetime import datetime, timedelta
 from django.utils import formats
-from reportlab.pdfgen import canvas
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image, Spacer
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import cm, inch
+from reportlab.lib.units import cm
 from reportlab.lib import colors
-from reportlab.rl_config import defaultPageSize
-from reportlab.graphics import renderPDF, renderSVG
+from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.shapes import Drawing
-from svglib.svglib import svg2rlg
-from reportlab.lib.utils import ImageReader
+from reportlab.graphics.charts.barcharts import VerticalBarChart
 from io import BytesIO
 from .models import Registro
 from .forms import *
@@ -68,6 +66,13 @@ def obtem_coordenadas(logradouro, numero, bairro, cidade, estado, pais="Brasil")
     except:
         return False, "", ""
 
+def localizacao_cidade(estado, cidade, pais="Brasil"):
+    gmaps = googlemaps.Client(key=google_api_key)
+    try:
+        geocode_result = gmaps.geocode(f"{cidade}, {estado}, {pais}")
+        return True, geocode_result[0]['geometry']['location']['lat'], geocode_result[0]['geometry']['location']['lng']
+    except:
+        return False, "", ""
 
 # Valida o CEP
 def registrar_cep(request):
@@ -287,7 +292,7 @@ def registros_apagar(request, ident):
     registro.delete()
     return registros(request)
 
-def analise_mapa(request):
+def analise_mapa(request, estado, cidade):
     forty_days = timezone.now() - timedelta(days = 40)
     registros = serializers.serialize("json", Registro.objects.filter(datahora__gte=forty_days), fields=["latitude", "longitude"])
     return render(request, 'analise/mapa.html', {"registros": registros, 'google_map_id': google_map_id})
@@ -299,7 +304,7 @@ def cabecalho_rodape(canvas, doc):
     titulo = Paragraph('<b>Combate ao mosquito</b><br/><i>Aedes aegypti</i>', titulo_s)
     data_f = formats.date_format(datetime.now(), "DATETIME_FORMAT")
     data_s = ParagraphStyle(name='data', alignment=TA_RIGHT, fontSize=12, leading=16)
-    data = Paragraph(f"Relatório gerado em:<br/>{data_f}", data_s)
+    data = Paragraph(f"Relatório gerado em<br/>{data_f}", data_s)
     cabecalho = Table([(logo, titulo, data)], colWidths=[1.5*cm, 8*cm, 9.5*cm], rowHeights=[1.5*cm])
     cabecalho.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
@@ -322,24 +327,156 @@ def cabecalho_rodape(canvas, doc):
     rodape.drawOn(canvas, 1 *cm, 1*cm)
     canvas.restoreState()
 
+def grafico_pizza(estado, cidade):
+    forty_days = timezone.now() - timedelta(days = 40)
+    registros = Registro.objects.filter(datahora__gte=forty_days, estado=estado, cidade=cidade).values('bairro').annotate(total=Count('bairro')).order_by('total').reverse()
+    dados = []
+    bairros = []
+    grafico = Drawing(width=530, height=150)
+    pizza = Pie()
+    pizza.x = 215
+    pizza.y = 25
+    pizza.sideLabels = True
+    pizza.slices.strokeWidth = 0.5
+    pizza.slices.strokeColor = colors.white
+    pizza.slices.fontName = 'Helvetica'
+    pizza.slices.fontSize = 10
+    pizza.innerRadiusFraction = 0.5
+    if registros.count() > 0:
+        cont = 0
+        for registro in registros:
+            dados.append(registro['total'])
+            if (registro['total'] == 1):
+                bairros.append(f"{registro['bairro']} ({registro['total']} registro)")
+            else:
+                bairros.append(f"{registro['bairro']} ({registro['total']} registros)")
+            if cont == 9: break
+            cont += 1
+        pizza.data = dados
+        pizza.labels = bairros
+    else:
+        pizza.data = [1]
+        pizza.labels = ['Sem registros nos últimos 40 dias']
+    grafico.add(pizza)
+    return grafico
+
+def grafico_barras(estado, cidade):
+    dados = []
+    meses = ['', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+    labels = []
+    for i in range(39, -1, -1):
+        days = timezone.now() - timedelta(days = i)
+        registros = Registro.objects.filter(
+            datahora__year=days.year,
+            datahora__month=days.month,
+            datahora__day=days.day,
+            estado=estado,
+            cidade=cidade
+        ).count()
+        if (registros == 0):
+            labels.append(f"")
+        else:
+            labels.append(f"{days.day} {meses[days.month]}")
+        dados.append(registros)
+    grafico = Drawing(width=530, height=160)
+    barras = VerticalBarChart()
+    barras.x = 20
+    barras.y = 40
+    barras.width = 530 - barras.x - 10
+    barras.height = 160 - barras.y - 10
+    barras.reversePlotOrder = 0
+    barras.valueAxis.forceZero = 1
+    barras.valueAxis.labels.fontName = 'Helvetica'
+    barras.barSpacing = 1
+    barras.data = [dados]
+    barras.bars.strokeColor = None
+    for i in range(len(barras.data)): barras.bars[i].fillColor = colors.blueviolet
+    barras.categoryAxis.labels.boxAnchor = 'ne'
+    barras.categoryAxis.labels.dx = -7
+    barras.categoryAxis.labels.dy = -7
+    barras.categoryAxis.labels.angle = 90
+    barras.categoryAxis.categoryNames = labels
+    barras.categoryAxis.labels.fontName = 'Helvetica'
+    barras.categoryAxis.labels.fontSize =10
+    grafico.add(barras)
+    return grafico
+
 def analise_relatorio(request):
+    estado = request.COOKIES.get('estado')
+    cidade = request.COOKIES.get('cidade')
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=1*cm,
                             leftMargin=1*cm, topMargin=3*cm, bottomMargin=2*cm)
     forty_days = timezone.now() - timedelta(days = 40)
-    registros = Registro.objects.filter(datahora__gte=forty_days)
+    bairros = Registro.objects.filter(datahora__gte=forty_days, estado=estado, cidade=cidade).values('bairro').annotate(total=Count('bairro')).order_by('total').reverse()
+    destaque = ParagraphStyle(name='CENTRALIZADO', fontSize=16,  alignment=TA_CENTER, spaceAfter=0.75*cm)
+    localidade = ParagraphStyle(name='CENTRALIZADO', fontSize=12,  alignment=TA_CENTER, spaceAfter=0.5*cm)
+    normal = ParagraphStyle(name='NORMAL', fontSize=10, alignment=TA_LEFT, firstLineIndent=24, spaceAfter=0.5*cm)
+    centralizado = ParagraphStyle(name='CENTRALIZADO', fontSize=10, alignment=TA_CENTER, spaceBefore=0.5*cm, spaceAfter=0.25*cm, )
     corpo = []
-    dados = []
-    for registro in registros:
-        dados.append([Paragraph(f"{registro.cidade}, {registro.estado}"), Paragraph(registro.bairro), Paragraph(f"{registro.endereco}, {registro.numero}")])
-    tabela = Table(dados, colWidths=[6*cm, 5*cm, 8*cm])
+    corpo.append(Paragraph("<b>Análise de dados</b>", destaque))
+    corpo.append(Paragraph(f"Localidade: <b>{cidade}/{estado}</b>", localidade))
+    corpo.append(Paragraph("O objetivo deste relatório é analisar os registros de focos suspeitos nos últimos 40 dias, organizando as informações por bairros com maior número de ocorrências para orientar ações de combate ao mosquito <i>Aedes aegypti</i>.", normal))
+    corpo.append(Paragraph("<b>Figura 1</b> - Bairros com maior número de registros de focos suspeitos nos últimos 40 dias.", centralizado))
+    corpo.append(grafico_pizza(estado, cidade))
+    corpo.append(Paragraph("<b>Figura 2</b> - Registros de focos suspeitos nos últimos 40 dias.", centralizado))
+    corpo.append(grafico_barras(estado, cidade))
+    dados = [[Paragraph("<b>Cidade/Estado</b>"), Paragraph("<b>Bairro</b>"), Paragraph("<b>Endereço</b>")]]
+    for bairro in bairros:
+        enderecos = Registro.objects.filter(datahora__gte=forty_days, estado=estado, cidade=cidade, bairro=bairro['bairro'])
+        for endereco in enderecos:
+            dados.append([Paragraph(f"{endereco.cidade}/{endereco.estado}"), Paragraph(endereco.bairro), Paragraph(f"{endereco.endereco}, {endereco.numero}")])
+    tabela = Table(dados, colWidths=[6*cm, 5*cm, 8*cm], spaceBefore=0.5*cm)
     tabela.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('ALIGN', (0, 0), (0, 0), 'LEFT'),
         ('INNERGRID',(0,0),(-1,-1),0.25,colors.grey),
         ('BOX',(0,0),(-1,-1),0.25,colors.grey),
     ]))
+    corpo.append(Paragraph("<b>Tabela 1</b> - Localização dos focos suspeitos dos bairros com o maior número de registros nos últimos 40 dias.", centralizado))
     corpo.append(tabela)
     doc.build(corpo, onFirstPage=cabecalho_rodape, onLaterPages=cabecalho_rodape)
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename="combate-aedes.pdf")
+
+# Obtem o Estado
+def analise_estado(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        form = SelecionarEstado()
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione o estado:', 'icone': 'flag-fill', 'header': 'Análise de dados' })
+        response.set_cookie('form', 'validar')
+        return response
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
+        form = SelecionarEstado(request.POST)
+        if form.is_valid():
+            estado = form.cleaned_data['estado']
+            form = SelecionarCidade(estado=estado)
+            request.path = 'analise_cidade'
+            response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'flag-fill', 'header': 'Análise de dados' })
+            response.set_cookie('estado', estado)
+            return response
+        else:
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Selecione o estado:', 'icone': 'flag-fill', 'header': 'Análise de dados' })
+
+# Obtem a Cidade
+def analise_cidade(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        estado = request.COOKIES.get('estado')
+        form = SelecionarCidade(estado=estado)
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'flag-fill', 'header': 'Análise de dados' })
+        response.set_cookie('form', 'validar')
+        return response
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
+        estado = request.COOKIES.get('estado')
+        form = SelecionarCidade(request.POST, estado=estado)
+        if form.is_valid():
+            estado = request.COOKIES.get('estado')
+            cidade = form.cleaned_data['cidade']
+            localizado, latitude, longitude = localizacao_cidade(estado, cidade)
+            forty_days = timezone.now() - timedelta(days = 40)
+            registros = serializers.serialize("json", Registro.objects.filter(datahora__gte=forty_days, estado=estado, cidade=cidade), fields=["latitude", "longitude"])
+            response = render(request, 'analise/mapa.html', {"registros": registros, 'voltar': 'analise_cidade', 'google_map_id': google_map_id, 'latitude': str(latitude), 'longitude': str(longitude)})
+            response.set_cookie('cidade', cidade)
+            return response
+        else:
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'flag-fill', 'header': 'Análise de dados' })

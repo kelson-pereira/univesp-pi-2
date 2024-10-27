@@ -13,7 +13,11 @@
         <div class="d-flex flex-grow-1 w-100" id="mapa"></div>
     </div>
     <div class="modal-footer">
+        {% if voltar %}
+        <button type="button" class="btn rounded-pill btn-secondary" hx-get="{% url voltar %}" hx-target="#dialog">Voltar</button>
+        {% else %}
         <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        {% endif %}
         <a href="{% url 'analise_relatorio' %}" class="btn rounded-pill btn-primary" role="button">
             <span id="loader" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
             <span>Gerar relatório</span>
@@ -27,22 +31,26 @@
         let dados = registros.map(registro => new google.maps.LatLng(registro["fields"].latitude, registro["fields"].longitude));
         const { Map } = await google.maps.importLibrary("maps");
         const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
-        let centro = {lat: -23.218645849, lng: -45.89179548738};
-        var obterLocalizacao = function(position) {
-            localStorage.setItem("lat", position.coords.latitude);
-            localStorage.setItem("lng", position.coords.longitude);
-            mapa.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
-        };
-        var obterErro = function (erro) {
-            console.log(erro.code + ": " + erro.message);
-        };
-        if (localStorage.getItem("lat") && localStorage.getItem("lng")) {
-            centro = {lat: +localStorage.getItem("lat"), lng: +localStorage.getItem("lng")};
-        } else if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition( 
-                obterLocalizacao, obterErro, {enableHighAccuracy: true, maximumAge: 10000}
-            );
-        }
+        let latitude = parseFloat('{{ latitude }}');
+        let longitude = parseFloat('{{ longitude }}');
+        //let centro = {lat: -23.218645849, lng: -45.89179548738};
+        let centro = {lat: latitude, lng: longitude};
+
+        //var obterLocalizacao = function(position) {
+        //    localStorage.setItem("lat", position.coords.latitude);
+        //    localStorage.setItem("lng", position.coords.longitude);
+        //    mapa.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+        //};
+        //var obterErro = function (erro) {
+        //    console.log(erro.code + ": " + erro.message);
+        //};
+        //if (localStorage.getItem("lat") && localStorage.getItem("lng")) {
+        //    centro = {lat: +localStorage.getItem("lat"), lng: +localStorage.getItem("lng")};
+        //} else if (navigator.geolocation) {
+        //    navigator.geolocation.getCurrentPosition( 
+        //        obterLocalizacao, obterErro, {enableHighAccuracy: true, maximumAge: 10000}
+        //    );
+        //}
         let mapa = new google.maps.Map(document.getElementById("mapa"), { zoom: 12, center: centro, mapId: "DEMO_MAP_ID", disableDefaultUI: true });
         
         let validade = document.createElement("span");
