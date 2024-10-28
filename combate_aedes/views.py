@@ -425,8 +425,8 @@ def analise_relatorio(request):
     for bairro in bairros:
         enderecos = Registro.objects.filter(datahora__gte=forty_days, estado=estado, cidade=cidade, bairro=bairro['bairro'])
         for endereco in enderecos:
-            dados.append([Paragraph(f"{endereco.cidade}/{endereco.estado}"), Paragraph(endereco.bairro), Paragraph(f"{endereco.endereco}, {endereco.numero}")])
-    tabela = Table(dados, colWidths=[6*cm, 5*cm, 8*cm], spaceBefore=0.5*cm)
+            dados.append([Paragraph(endereco.bairro), Paragraph(f"{endereco.endereco}, {endereco.numero}"), Paragraph(endereco.descricao)])
+    tabela = Table(dados, colWidths=[5*cm, 8*cm, 6*cm], spaceBefore=0.5*cm)
     tabela.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('ALIGN', (0, 0), (0, 0), 'LEFT'),
