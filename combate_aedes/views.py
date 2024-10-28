@@ -421,7 +421,7 @@ def analise_relatorio(request):
     corpo.append(grafico_pizza(estado, cidade))
     corpo.append(Paragraph("<b>Figura 2</b> - Registros de focos suspeitos nos últimos 40 dias.", centralizado))
     corpo.append(grafico_barras(estado, cidade))
-    dados = [[Paragraph("<b>Cidade/Estado</b>"), Paragraph("<b>Bairro</b>"), Paragraph("<b>Endereço</b>")]]
+    dados = [[Paragraph("<b>Bairro</b>"), Paragraph("<b>Endereço</b>"), Paragraph("<b>Descrição</b>")]]
     for bairro in bairros:
         enderecos = Registro.objects.filter(datahora__gte=forty_days, estado=estado, cidade=cidade, bairro=bairro['bairro'])
         for endereco in enderecos:
