@@ -303,8 +303,8 @@ def cabecalho_rodape(canvas, doc):
     titulo_s = ParagraphStyle(name='titulo', alignment=TA_LEFT, fontSize=16, leading=18)
     titulo = Paragraph('<b>Combate ao mosquito</b><br/><i>Aedes aegypti</i>', titulo_s)
     data_f = formats.date_format(datetime.now(), "DATETIME_FORMAT")
-    data_s = ParagraphStyle(name='data', alignment=TA_RIGHT, fontSize=12, leading=16)
-    data = Paragraph(f"Relatório gerado em<br/>{data_f}", data_s)
+    data_s = ParagraphStyle(name='data', alignment=TA_RIGHT, fontSize=10, leading=12)
+    data = Paragraph(f"Relatório gerado em<br/>{data_f}<br/><font color='red'><b>Experimental</b></font>", data_s)
     cabecalho = Table([(logo, titulo, data)], colWidths=[1.5*cm, 8*cm, 9.5*cm], rowHeights=[1.5*cm])
     cabecalho.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
