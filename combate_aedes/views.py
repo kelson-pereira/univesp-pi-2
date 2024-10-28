@@ -437,7 +437,7 @@ def analise_relatorio(request):
     corpo.append(tabela)
     doc.build(corpo, onFirstPage=cabecalho_rodape, onLaterPages=cabecalho_rodape)
     buffer.seek(0)
-    return FileResponse(buffer, as_attachment=True, filename="combate-aedes.pdf")
+    return FileResponse(buffer, as_attachment=False, filename="combate-aedes.pdf")
 
 # Obtem o Estado
 def analise_estado(request):
