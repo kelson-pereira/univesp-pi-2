@@ -444,7 +444,7 @@ def analise_estado(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = SelecionarEstado()
         form.initial.setdefault('estado', request.COOKIES.get('estado'))
-        response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione o estado:', 'icone': 'flag-fill', 'header': 'Análise de dados' })
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione o estado:', 'icone': 'clipboard-check-fill', 'header': 'Análise de dados' })
         response.set_cookie('form', 'validar')
         return response
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
@@ -454,12 +454,12 @@ def analise_estado(request):
             form = SelecionarCidade(estado=estado)
             form.initial.setdefault('cidade', request.COOKIES.get('cidade'))
             request.path = 'analise_cidade'
-            response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'flag-fill', 'header': 'Análise de dados' })
+            response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'clipboard-data-fill', 'header': 'Análise de dados' })
             response.set_cookie('estado', estado)
             response.set_cookie('form', 'validar')
             return response
         else:
-            return render(request, 'modal.html', {'form': form, 'titulo': 'Selecione o estado:', 'icone': 'flag-fill', 'header': 'Análise de dados' })
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Selecione o estado:', 'icone': 'clipboard-check-fill', 'header': 'Análise de dados' })
 
 # Obtem a Cidade
 def analise_cidade(request):
@@ -467,7 +467,7 @@ def analise_cidade(request):
         estado = request.COOKIES.get('estado')
         form = SelecionarCidade(estado=estado)
         form.initial.setdefault('cidade', request.COOKIES.get('cidade'))
-        response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'flag-fill', 'header': 'Análise de dados' })
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'clipboard-data-fill', 'header': 'Análise de dados' })
         response.set_cookie('form', 'validar')
         return response
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
@@ -484,4 +484,4 @@ def analise_cidade(request):
             response.set_cookie('form', 'validar')
             return response
         else:
-            return render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'flag-fill', 'header': 'Análise de dados' })
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Selecione a cidade:', 'voltar': 'analise_estado', 'icone': 'clipboard-data-fill', 'header': 'Análise de dados' })
