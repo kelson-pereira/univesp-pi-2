@@ -25,12 +25,14 @@ class SelecionarEstado(forms.Form):
     def __init__(self, *args, **kwargs):
         super(SelecionarEstado, self).__init__(*args, **kwargs)
 
-    estados = []
-    forty_days = timezone.now() - timedelta(days = 40)
-    registros = Registro.objects.filter(datahora__gte=forty_days).values('estado').distinct()
-    for registro in registros:
-        estados.append((registro['estado'], registro['estado']))
-    estado = forms.ChoiceField(widget=forms.Select(attrs={'class':'form-select fs-4 mt-3'}), choices=estados, label='Selecione o estado desejado para obter a análise de dados.')
+        estados = []
+        forty_days = timezone.now() - timedelta(days = 40)
+        registros = Registro.objects.filter(datahora__gte=forty_days).values('estado').distinct()
+        for registro in registros:
+            estados.append((registro['estado'], registro['estado']))
+        self.fields['estado'].choices = estados
+        
+    estado = forms.ChoiceField(widget=forms.Select(attrs={'class':'form-select fs-4 mt-3'}), label='Selecione o estado desejado para obter a análise de dados.')
 
 class SelecionarCidade(forms.Form):
     def __init__(self, *args, **kwargs):
