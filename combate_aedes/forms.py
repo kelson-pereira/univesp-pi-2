@@ -22,27 +22,15 @@ class ValidarPolitica(forms.Form):
     termos = forms.BooleanField(initial=False, label='Concordo com a política.', widget=forms.CheckboxInput(attrs={'class':'form-check-input'}), required=True)
 
 class SelecionarEstado(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(SelecionarEstado, self).__init__(*args, **kwargs)
+
     estados = []
     forty_days = timezone.now() - timedelta(days = 40)
     registros = Registro.objects.filter(datahora__gte=forty_days).values('estado').distinct()
     for registro in registros:
         estados.append((registro['estado'], registro['estado']))
     estado = forms.ChoiceField(widget=forms.Select(attrs={'class':'form-select fs-4 mt-3'}), choices=estados, label='Selecione o estado desejado para obter a análise de dados.')
-
-class SelecionarCidadeOK(forms.Form):
-    def __init__(self, *args, estado=None, **kwargs):
-        self.estado = estado
-        super().__init__(*args, **kwargs)
-
-        cidades = []
-        forty_days = timezone.now() - timedelta(days = 40)
-        registros = Registro.objects.filter(datahora__gte=forty_days, estado=estado).values('cidade').distinct()
-        for registro in registros:
-            cidades.append((registro['cidade'], registro['cidade']))
-        print(estado)
-        print(cidades)
-    
-    cidade = forms.ChoiceField(widget=forms.Select(attrs={'class':'form-select fs-4 mt-3'}), choices=[('SJC', 'SJC')], label='Selecione a cidade desejada para obter a análise de dados.')
 
 class SelecionarCidade(forms.Form):
     def __init__(self, *args, **kwargs):
