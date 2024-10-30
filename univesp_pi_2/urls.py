@@ -37,4 +37,6 @@ urlpatterns = [
     path('analise_cidade', views.analise_cidade, name='analise_cidade'),
     path('analise_mapa', views.analise_mapa, name='analise_mapa'),
     path('analise_relatorio', views.analise_relatorio, name='analise_relatorio'),
+    path('mais_mosquito', views.mais_mosquito, name='mais_mosquito'),
+    path('mais_criadouros', views.mais_criadouros, name='mais_criadouros'),
 ]

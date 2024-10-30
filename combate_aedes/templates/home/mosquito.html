@@ -6,7 +6,7 @@
                 <h1><i class="bi bi-search"></i></h1>
                 <h1 class="display-4 fw-medium">O mosquito</h1>
                 <div class="lh-sm mt-3" style="max-width: 400px;">O <i>Aedes aegypti</i> é o mosquito transmissor da Dengue. Menor do que os mosquitos comuns, é preto com listras brancas no tronco, na cabeça e nas pernas.</div>
-                <button type="button" class="btn rounded-pill btn-outline-light mt-4 mx-1">Saiba mais</button>
+                <button type="button" class="btn rounded-pill btn-outline-light mt-4 mx-1" hx-get="{% url 'mais_mosquito' %}" hx-target="#dialog">Saiba mais</button>
             </div>
         </div>
     </div>

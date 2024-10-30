@@ -34,6 +34,12 @@ favicon = RedirectView.as_view(url='/static/imagens/favicon.ico', permanent=True
 def home(request):
     return render(request, 'home.html', {'google_api_key': google_api_key})
 
+def mais_mosquito(request):
+    return render(request, 'mais/mosquito.html')
+
+def mais_criadouros(request):
+    return render(request, 'mais/criadouros.html')
+
 # Verifica se o CEP existe
 def obtem_endereco(cep):
     try:

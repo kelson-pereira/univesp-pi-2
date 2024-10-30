@@ -1,0 +1,52 @@
+{% load static %}
+<form hx-post="{{ request.path }}" class="modal-content">
+    <style>
+        .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
+    </style>
+    {% csrf_token %}
+    <div class="modal-header">
+        <h1 class="modal-title fs-5">O mosquito</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body border-bottom" style="touch-action: pan-y;">
+        <div class="mb-3">
+            <div>
+                <p>O <i>Aedes aegypti</i> é um mosquito com características distintas do mosquito comum, geralmente conhecido como <i>Culex</i> (o pernilongo ou muriçoca), tanto em aparência quanto em comportamento.</p>
+                <img class="img-fluid rounded mb-3" src="{% static 'imagens/aedes-aegypti.jpg' %}">
+                <ol>
+                    <li><b>Características Físicas</b></li>
+                    <ul>
+                        <li><b>Tamanho:</b> O <i>Aedes aegypti</i> é um mosquito pequeno, com cerca de 5 a 7 mm de comprimento.</li>
+                        <li><b>Corpo e Listras Brancas:</b> Possui um corpo escuro com listras brancas nas pernas e uma marcação prateada em forma de lira no tórax. Essas marcas são uma das principais características que diferenciam o <i>Aedes aegypti</i> do mosquito comum, que geralmente é de cor marrom sem as listras brancas.</li>
+                        <li><b>Asas:</b> As asas do <i>Aedes aegypti</i> são transparentes, enquanto as do <i>Culex</i> têm uma coloração mais uniforme, geralmente acinzentada ou marrom.</li>
+                    </ul>
+                    <li><b>Ciclo de Vida</b></li>
+                    <ul>
+                        <li>O ciclo de vida do <i>Aedes aegypti</i> inclui quatro estágios: ovo, larva, pupa e adulto. As fêmeas colocam seus ovos em água parada e limpa, onde as larvas se desenvolvem até virarem adultos.</li>
+                        <li>Uma característica dos ovos do <i>Aedes aegypti</i> é que podem sobreviver por meses em ambientes secos, esperando o contato com a água para eclodirem. Isso os torna muito adaptáveis e difíceis de erradicar em áreas onde há água parada.</li>
+                    </ul>
+                    <li><b>Hábitos de Alimentação</b></li>
+                    <ul>
+                        <li>Fêmeas e Picadas: Apenas as fêmeas do <i>Aedes aegypti</i> picam, pois precisam de sangue para desenvolver seus ovos. Já os machos se alimentam de néctar e sucos de plantas.</li>
+                        <li>Horários de Atividade: O <i>Aedes aegypti</i> é um mosquito diurno, com atividade concentrada nas primeiras horas da manhã e ao entardecer. Isso o diferencia do <i>Culex</i>, que é mais ativo durante a noite.</li>
+                        <li>Silencioso: Ao contrário do <i>Culex</i>, que costuma emitir um zumbido facilmente perceptível, o <i>Aedes aegypti</i> é mais silencioso, o que facilita sua aproximação sem ser notado.</li>
+                    </ul>
+                    <li><b>Locais de Reprodução</b></li>
+                    <ul>
+                        <li>O <i>Aedes aegypti</i> prefere água limpa e parada, onde deposita seus ovos. Ele usa recipientes como vasos, pneus, caixas d'água destampadas, bebedouros de animais, e até tampinhas de garrafa ou sacolas plásticas.</li>
+                        <li>Já o mosquito <i>Culex</i> tende a se reproduzir em águas poluídas ou com matéria orgânica em decomposição, como esgotos a céu aberto e poças de águas sujas.</li>
+                    </ul>
+                    <li><b>Transmissão de Doenças</b></li>
+                    </ul>
+                    <ul>
+                        <li>O <i>Aedes aegypti</i> é o vetor de doenças graves como dengue, zika, chikungunya e febre amarela urbana, todas transmitidas pela picada da fêmea infectada. Esse mosquito é considerado uma ameaça à saúde pública, especialmente em áreas urbanas com grande concentração de pessoas e escassez de saneamento básico.
+                        <li>O <i>Culex</i>, por outro lado, raramente transmite doenças graves em humanos, sendo associado à transmissão de algumas doenças em animais e, em regiões específicas, à transmissão de filariose.</li>
+                    </ul>
+                </ol>          
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Fechar</button>
+    </div>
+</form>

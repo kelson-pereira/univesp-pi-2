@@ -11,8 +11,8 @@
             </div>
             <div>
                 <div>Saiba mais sobre:</div>
-                <a class="btn rounded-pill btn-outline-primary mt-2 mx-1" href="#mosquito">O mosquito</a>
-                <a class="btn rounded-pill btn-outline-primary mt-2 mx-1" href="#criadouros">Os criadouros</a>
+                <button type="button" class="btn rounded-pill btn-outline-primary mt-2 mx-1" hx-get="{% url 'mais_mosquito' %}" hx-target="#dialog">O mosquito</button>
+                <button type="button" class="btn rounded-pill btn-outline-primary mt-2 mx-1" hx-get="{% url 'mais_criadouros' %}" hx-target="#dialog">Os criadouros</button>
             </div>
         </div>
     </div>

@@ -10,8 +10,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav" style="--bs-navbar-hover-color: rgb(var(--bs-link-color-rgb));">
-                    <a class="nav-link" href="#mosquito">O mosquito</a>
-                    <a class="nav-link" href="#criadouros">Os criadouros</a>
+                    <a class="nav-link" hx-get="{% url 'mais_mosquito' %}" hx-target="#dialog">O mosquito</a>
+                    <a class="nav-link" hx-get="{% url 'mais_criadouros' %}" hx-target="#dialog">Os criadouros</a>
                     <a class="nav-link" hx-get="{% url 'registros_telefone' %}" hx-target="#dialog">Meus registros</a>
                     <a class="nav-link" hx-get="{% url 'analise_estado' %}" hx-target="#dialog">Análise de dados</a>
                 </div>
