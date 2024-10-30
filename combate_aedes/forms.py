@@ -27,7 +27,7 @@ class SelecionarEstado(forms.Form):
 
         estados = []
         forty_days = timezone.now() - timedelta(days = 40)
-        registros = Registro.objects.filter(datahora__gte=forty_days).values('estado').distinct()
+        registros = Registro.objects.filter(datahora__gte=forty_days).values('estado').distinct().order_by('estado')
         for registro in registros:
             estados.append((registro['estado'], registro['estado']))
         self.fields['estado'].choices = estados
@@ -41,7 +41,7 @@ class SelecionarCidade(forms.Form):
 
         cidades = []
         forty_days = timezone.now() - timedelta(days = 40)
-        registros = Registro.objects.filter(datahora__gte=forty_days, estado=estado).values('cidade').distinct()
+        registros = Registro.objects.filter(datahora__gte=forty_days, estado=estado).values('cidade').distinct().order_by('cidade')
         for registro in registros:
             cidades.append((registro['cidade'], registro['cidade']))
         self.fields['cidade'].choices = cidades
