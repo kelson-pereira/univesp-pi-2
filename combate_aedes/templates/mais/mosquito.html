@@ -2,6 +2,8 @@
 <form hx-post="{{ request.path }}" class="modal-content">
     <style>
         .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
+        .spinner-border {display: none;}
+        .spinner-border.htmx-request {display: inline-block}
     </style>
     {% csrf_token %}
     <div class="modal-header">
@@ -28,9 +30,9 @@
                     </ul>
                     <li><b>Hábitos de Alimentação</b></li>
                     <ul>
-                        <li>Fêmeas e Picadas: Apenas as fêmeas do <i>Aedes aegypti</i> picam, pois precisam de sangue para desenvolver seus ovos. Já os machos se alimentam de néctar e sucos de plantas.</li>
-                        <li>Horários de Atividade: O <i>Aedes aegypti</i> é um mosquito diurno, com atividade concentrada nas primeiras horas da manhã e ao entardecer. Isso o diferencia do <i>Culex</i>, que é mais ativo durante a noite.</li>
-                        <li>Silencioso: Ao contrário do <i>Culex</i>, que costuma emitir um zumbido facilmente perceptível, o <i>Aedes aegypti</i> é mais silencioso, o que facilita sua aproximação sem ser notado.</li>
+                        <li><b>Fêmeas e Picadas:</b> Apenas as fêmeas do <i>Aedes aegypti</i> picam, pois precisam de sangue para desenvolver seus ovos. Já os machos se alimentam de néctar e sucos de plantas.</li>
+                        <li><b>Horários de Atividade:</b> O <i>Aedes aegypti</i> é um mosquito diurno, com atividade concentrada nas primeiras horas da manhã e ao entardecer. Isso o diferencia do <i>Culex</i>, que é mais ativo durante a noite.</li>
+                        <li><b>Silencioso:</b> Ao contrário do <i>Culex</i>, que costuma emitir um zumbido facilmente perceptível, o <i>Aedes aegypti</i> é mais silencioso, o que facilita sua aproximação sem ser notado.</li>
                     </ul>
                     <li><b>Locais de Reprodução</b></li>
                     <ul>
@@ -49,5 +51,9 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn rounded-pill btn-primary" hx-get="{% url 'mais_criadouros' %}" hx-target="#dialog">
+            <span id="loader" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span>Os Criadouros</span>
+        </button>
     </div>
 </form>
