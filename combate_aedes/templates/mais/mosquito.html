@@ -4,6 +4,8 @@
         .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
         .spinner-border {display: none;}
         .spinner-border.htmx-request {display: inline-block}
+        ul {padding-inline-start: 20px; list-style-type: disc;}
+        li {margin-bottom: 8px;}
     </style>
     {% csrf_token %}
     <div class="modal-header">
@@ -12,12 +14,13 @@
     </div>
     <div class="modal-body border-bottom" style="touch-action: pan-y;">
         <div>
+            <p class="fs-5"><b>Sobre o <i>Aedes aegypti</i></b></p>
             <p>O <i>Aedes aegypti</i> é um mosquito com características distintas do mosquito comum, geralmente conhecido como <i>Culex</i> (o pernilongo ou muriçoca), tanto em aparência quanto em comportamento.</p>
             <figure class="figure">
                 <img class="figure-img img-fluid rounded" src="{% static 'imagens/aedes-aegypti.jpg' %}">
                 <figcaption class="figure-caption">Foto: <i>Aedes aegypti</i> (<b>mosquito-da-dengue</b> ou <b>pernilongo-rajado</b >)</figcaption>
             </figure>
-            <p><b>Características e hábitos do <i>Aedes aegypti</i>:</b></p>
+            <p class="fs-5"><b>Características e hábitos do <i>Aedes aegypti</i></b></p>
             <ol>
                 <li><b>Características Físicas</b></li>
                 <ul>

@@ -4,6 +4,8 @@
         .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
         .spinner-border {display: none;}
         .spinner-border.htmx-request {display: inline-block}
+        ul {padding-inline-start: 20px;}
+        li {margin-bottom: 8px;}
     </style>
     {% csrf_token %}
     <div class="modal-header">
@@ -13,9 +15,10 @@
     <div class="modal-body border-bottom" style="touch-action: pan-y;">
         <div class="mb-3">
             <div>
+                <p class="fs-5"><b>Sobre os criadoudos do <i>Aedes aegypti</i></b></p>
                 <p>Os criadouros do <i>Aedes aegypti</i> são locais onde o mosquito encontra água parada, necessária para a reprodução e desenvolvimento de seus ovos. Esses criadouros geralmente acumulam água limpa e parada, onde as fêmeas depositam seus ovos, dando início ao ciclo de vida do mosquito. Comumente encontrados em áreas urbanas, esses locais podem ser naturais ou artificiais, e são propícios para o desenvolvimento das larvas e pupas.</p>
                 <img class="img-fluid rounded mb-3" src="{% static 'imagens/criadouro.jpg' %}">
-                <p><b>Principais tipos de criadouros:</b></p>
+                <p class="fs-5"><b>Principais tipos de criadouros:</b></p>
                 <ol>
                     <li><b>Recipientes domésticos:</b> Vasos de plantas, pratinhos, potes, baldes, bebedouros de animais, calhas e outros recipientes que acumulam água em quintais e áreas externas são locais preferidos do mosquito.</li>
                     <li><b>Lixo e entulho:</b> Objetos descartados como garrafas, latas, sacolas plásticas, tampas, sucatas e entulhos ao ar livre retêm água facilmente, tornando-se criadouros comuns.</li>
@@ -23,7 +26,7 @@
                     <li><b>Pneus e materiais recicláveis:</b> Pneus velhos e materiais recicláveis, frequentemente armazenados em áreas abertas, acumulam água de forma fácil, facilitando a reprodução do mosquito.</li>
                     <li><b>Locais naturais:</b> Áreas com buracos em árvores ou rochas que acumulam água, além de poças temporárias em solos, também podem se tornar criadouros.</li>
                 </ol>
-                <p><b>Prevenção:</b> Evitar esses criadouros é essencial para controlar a população do <i>Aedes aegypti</i>. Medidas como manter recipientes secos ou cobertos, limpar calhas e armazenar materiais que possam acumular água em locais cobertos são fundamentais para reduzir a proliferação do mosquito e prevenir doenças como a dengue, zika e chikungunya.</p>
+                <p class="alert alert-primary" role="alert"><b>Prevenção:</b> Evitar esses criadouros é essencial para controlar a população do <i>Aedes aegypti</i>. Medidas como manter recipientes secos ou cobertos, limpar calhas e armazenar materiais que possam acumular água em locais cobertos são fundamentais para reduzir a proliferação do mosquito e prevenir doenças como a dengue, zika e chikungunya.</p>
             </div>
         </div>
     </div>
