@@ -200,7 +200,7 @@ def registrar_foto(request):
                 imagem.save(img, format='JPEG', quality=70, optimize=True, exif=exif)
                 fs = FileSystemStorage()
                 filename = fs.save('image.jpg', img)
-                print(filename)
+                print(fs.url(filename))
             form = ValidarDescricao()
             request.path = 'registrar_descricao'
             form.initial.setdefault('descricao', request.COOKIES.get('descricao'))
@@ -277,7 +277,7 @@ def registrar_politica(request):
                 filename = request.COOKIES.get('filename')
                 if (filename):
                     path = Path(settings.MEDIA_ROOT + filename)
-                    print(filename)
+                    print(path)
                     with open(path, "rb") as image_file:
                         registro.imagem = base64.b64encode(image_file.read()).decode('utf-8')
                     os.remove(path)
