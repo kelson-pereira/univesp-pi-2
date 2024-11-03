@@ -278,7 +278,10 @@ def registrar_politica(request):
                 if (filename):
                     #path = Path(settings.MEDIA_ROOT + filename)
                     path = Path(os.path.join(settings.MEDIA_URL, filename))
-                    print(path)
+                    if (os.path.exists(path)):
+                        print('O caminho existe: ', path)
+                    else:
+                        print('O caminho nao existe: ', path)
                     with open(path, "rb") as image_file:
                         registro.imagem = base64.b64encode(image_file.read()).decode('utf-8')
                     os.remove(path)
