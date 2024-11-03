@@ -200,7 +200,7 @@ def registrar_foto(request):
                 imagem.save(img, format='JPEG', quality=70, optimize=True, exif=exif)
                 fs = FileSystemStorage()
                 filename = fs.save('image.jpg', img)
-                if filename.exists:
+                if (filename.exists):
                     print('Existe: ', filename)
                 else:
                     print('Nao existe: ', filename)
@@ -280,7 +280,7 @@ def registrar_politica(request):
                 filename = request.COOKIES.get('filename')
                 if (filename):
                     path = Path(settings.MEDIA_ROOT + filename)
-                    if path.exists:
+                    if (path.exists):
                         print('Existe: ', path)
                     else:
                         print('Nao existe: ', path)
