@@ -276,7 +276,8 @@ def registrar_politica(request):
                 registro.termos = form.cleaned_data['termos']
                 filename = request.COOKIES.get('filename')
                 if (filename):
-                    path = Path(settings.MEDIA_ROOT + filename)
+                    #path = Path(settings.MEDIA_ROOT + filename)
+                    path = Path(os.path.join(settings.MEDIA_ROOT, filename))
                     print(path)
                     with open(path, "rb") as image_file:
                         registro.imagem = base64.b64encode(image_file.read()).decode('utf-8')
