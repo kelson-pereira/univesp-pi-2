@@ -18,3 +18,4 @@ class Registro(models.Model):
     latitude = models.DecimalField(max_digits=10, decimal_places=8, null=True)
     longitude = models.DecimalField(max_digits=11, decimal_places=8, null=True)
     termos = models.BooleanField(default=False)
+    imagem = models.ImageField(upload_to='imagens/', blank=True, null=True)

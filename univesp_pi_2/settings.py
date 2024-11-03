@@ -24,6 +24,10 @@ load_dotenv()
 # Cria caminhos dentro do projeto como: BASE_DIR/'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Os arquivos de mídia enviados pelo usuário dependem de duas configurações:
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR,"media/")
+
 # Configurações de desenvolvimento de início rápido – inadequadas para produção
 # Consulte https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 

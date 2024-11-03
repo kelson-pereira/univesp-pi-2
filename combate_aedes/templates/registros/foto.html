@@ -1,0 +1,25 @@
+<div class="modal-content" style="min-height: 420px;">
+    {% csrf_token %}
+    <div class="modal-header align-items-start" style="padding-top: 18px;">
+        <div class="d-flex flex-column w-100">
+            <div class="d-flex flex-row">
+                <h1 class="modal-title fs-5 lh-sm" style="margin-right: 8px;">{{ registro.endereco }}, {{ registro.numero }}</h1>
+                <button type="button" class="btn-close flex-shrink-0" data-bs-dismiss="modal" aria-label="Close" style="padding-top: 18px;"></button>
+            </div>
+            <div class="text-body-secondary lh-sm"><small>{{registro.bairro}}, {{registro.cidade}}/{{registro.estado}}, {{ registro.cep|slice:"0:5" }}-{{ registro.cep|slice:"5:8" }}</small></div>
+            <div class="text-body-secondary lh-sm mt-1"><small><i class="bi bi-calendar2-fill me-1 text-secondary"></i><span>{{registro.datahora|date:"SHORT_DATETIME_FORMAT"}}</span>{% if registro.descricao %} • <span>{{registro.descricao}}</span>{% endif %}</small></div>
+        </div>
+    </div>
+    <div class="modal-body d-flex p-0" style="touch-action: pan-y;">
+        {% if registro.imagem %}
+        <img class="d-flex flex-grow-1 object-fit-contain w-100 img-fluid" src="data:image/png;base64,{{ registro.imagem }}">
+        {% endif %}
+    </div>
+    <div class="modal-footer">
+        {% if voltar %}
+        <button type="button" class="btn rounded-pill btn-secondary" hx-get="{% url voltar ident=registro.ident %}" hx-target="#dialog">Voltar</button>
+        {% else %}
+        <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        {% endif %}
+    </div>
+</div>

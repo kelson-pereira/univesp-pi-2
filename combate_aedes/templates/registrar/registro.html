@@ -7,8 +7,10 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body d-flex fw-medium" style="touch-action: pan-y;">
-        <div class="d-flex flex-grow-1 align-self-center justify-content-center">
-            {{ mensagem }}
+        <div class="d-flex flex-column w-100 justify-content-center">
+            <div class="align-self-center">{{ mensagem }}</div>
+            <div class="align-self-center"><button type="button" class="btn rounded-pill btn-secondary mt-4" hx-get="{% url 'registros_telefone' %}" hx-target="#dialog">Meus registros</button></div>
+            <div class="align-self-center"><button type="button" class="btn rounded-pill btn-secondary mt-4" hx-get="{% url 'analise_estado' %}" hx-target="#dialog">Análise de dados</button></div>
         </div>
     </div>
     <div class="modal-footer">

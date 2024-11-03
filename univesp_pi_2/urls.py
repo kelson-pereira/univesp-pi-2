@@ -12,10 +12,12 @@ Views baseada em uma classe:
     2. Adicione a URL em urlpatterns:  path('', Home.as_view(), name='home')
 Incluindo outra configuração de URL:
     1. Importe a função include(): from django.urls import include, path
-    2. 
+    2. Adicione a URL em urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+#from django.contrib import admin
+from django.conf import settings
 from django.urls import path, re_path
+from django.conf.urls.static import static
 from combate_aedes import views
 
 urlpatterns = [
@@ -32,6 +34,7 @@ urlpatterns = [
     path('registros', views.registros, name='registros'),
     path('registros_telefone', views.registros_telefone, name='registros_telefone'),
     path('registros_visualizar/<int:ident>', views.registros_visualizar, name='registros_visualizar'),
+    path('registros_foto/<int:ident>', views.registros_foto, name='registros_foto'),
     path('registros_apagar/<int:ident>', views.registros_apagar, name='registros_apagar'),
     path('analise_estado', views.analise_estado, name='analise_estado'),
     path('analise_cidade', views.analise_cidade, name='analise_cidade'),
@@ -40,3 +43,6 @@ urlpatterns = [
     path('mais_mosquito', views.mais_mosquito, name='mais_mosquito'),
     path('mais_criadouros', views.mais_criadouros, name='mais_criadouros'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

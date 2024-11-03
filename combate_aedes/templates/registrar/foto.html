@@ -1,18 +1,25 @@
-<form hx-post="{{ request.path }}" class="modal-content">
+<form enctype="multipart/form-data" hx-post="{{ request.path }}" hx-indicator="#loader" class="modal-content" style="min-height: 420px;">
     <style>
         .errorlist {color: red; font-weight: bold; list-style-type: none; padding-left: 0; margin-bottom: 4px;}
+        .spinner-border {display: none;}
+        .spinner-border.htmx-request {display: inline-block;}
+        input[type=file]::file-selector-button {color: var(--bs-primary);}
     </style>
     {% csrf_token %}
     <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Registrar um foco suspeito</h1>
+        {% if header %}
+        <h1 class="modal-title fs-5">{{ header }}</h1>
+        {% else %}
+        <h1 class="modal-title fs-5">Registrar um foco suspeito</h1>
+        {% endif %}
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
-    <div class="modal-body d-flex" style="touch-action: pan-y; min-height: 340px;">
+    <div class="modal-body" style="touch-action: pan-y;">
         <h1 class="col-form-label fs-2 fw-bold"><i class="bi bi-{{ icone }} me-2"></i>{{ titulo }}</h1>
-        <p>(Opcional) Se possível, adicione uma foto do local suspeito. Isso pode auxiliar significativamente nas ações de combate ao mosquito.</p>
-        <div class="d-flex flex-grow-1 align-self-center">
-            <button type="button mt-4" class="d-flex m-auto btn rounded-pill btn-primary">Adicionar foto</button>
-        </div>
+        {% if mensagem_erro %}
+            <div class="bg-danger bg-opacity-25 rounded fw-medium text-dark p-2 mb-2">{{ mensagem_erro }}</div>
+        {% endif %}
+        {{ form.as_p }}
     </div>
     <div class="modal-footer">
         {% if voltar %}
@@ -20,6 +27,9 @@
         {% else %}
         <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         {% endif %}
-        <button type="submit" class="btn rounded-pill btn-primary">Continuar</button>
+        <button type="submit" class="btn rounded-pill btn-primary">
+            <span id="loader" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span>Continuar</span>
+        </button>
     </div>
 </form>
