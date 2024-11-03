@@ -35,7 +35,6 @@ google_map_id = settings.GOOGLE_MAP_ID
 
 favicon = RedirectView.as_view(url='/static/imagens/favicon.ico', permanent=True)
 
-# Exibe a página principal
 def home(request):
     return render(request, 'home.html', {'google_api_key': google_api_key})
 
@@ -45,7 +44,6 @@ def mais_mosquito(request):
 def mais_criadouros(request):
     return render(request, 'mais/criadouros.html')
 
-# Verifica se o CEP existe
 def obtem_endereco(cep):
     try:
         gmaps = googlemaps.Client(key=google_api_key, timeout=5)
@@ -68,7 +66,6 @@ def obtem_endereco(cep):
         except:
             return False, "", "", "", ""
 
-# Obtém as Coordenadas Geográficas (latitude e longitude)
 def obtem_coordenadas(logradouro, numero, bairro, cidade, estado, pais="Brasil"):
     gmaps = googlemaps.Client(key=google_api_key)
     try:
@@ -85,23 +82,16 @@ def localizacao_cidade(estado, cidade, pais="Brasil"):
     except:
         return False, "", ""
 
-# Valida o CEP
 def registrar_cep(request):
-    # GET e estado inicial
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
-        # entrega o formulário vazio
         form = ValidarCep()
         form.initial.setdefault('cep', request.COOKIES.get('cep'))
         response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill' })
-        # define o cookie para validar
         response.set_cookie('form', 'validar')
         return response
-    # POST e estado validar
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
-        # verifica se o valor digitado é válido
         form = ValidarCep(request.POST)
         if form.is_valid():
-            # a estrutura do cep é validada
             cep = form.cleaned_data['cep']
             cep_encontrado, logradouro, bairro, cidade, estado = obtem_endereco(cep)
             endereco = f"{logradouro}, {bairro} - {cidade}/{estado}"
@@ -111,24 +101,16 @@ def registrar_cep(request):
             request.path = 'registrar_numero'
             form.initial.setdefault('numero', request.COOKIES.get('numero'))
             response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'registrar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
-            # define o cookie para o cep
             response.set_cookie('cep', cep)
-            # define o cookie para o logradouro
             response.set_cookie('logradouro', logradouro)
-            # define o cookie para o bairro
             response.set_cookie('bairro', bairro)
-            # define o cookie para o cidade
             response.set_cookie('cidade', cidade)
-            # define o cookie para o estado
             response.set_cookie('estado', estado)
-            # define o cookie para inicial
             response.set_cookie('form', 'validar')
-            # encaminha para o próximo form
             return response
         else:
             return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'icone': 'house-fill' })
 
-# Valida o Número
 def registrar_numero(request):
     logradouro = request.COOKIES.get('logradouro')
     bairro = request.COOKIES.get('bairro')
@@ -156,7 +138,6 @@ def registrar_numero(request):
         else:
             return render(request, 'modal.html', {'form': form, 'titulo': 'Informe o número:', 'voltar': 'registrar_cep', 'icone': 'signpost-fill', 'endereco': endereco })
 
-# Valida o Telefone
 def registrar_telefone(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarTelefone()
@@ -168,17 +149,16 @@ def registrar_telefone(request):
         form = ValidarTelefone(request.POST)
         if form.is_valid():
             telefone = form.cleaned_data['telefone']
-            form = ValidarFoto()
-            request.path = 'registrar_foto'
-            form.initial.setdefault('imagem', request.COOKIES.get('imagem'))
-            response = render(request, 'registrar/foto.html', {'form': form, 'titulo': 'Adicionar foto:', 'voltar': 'registrar_telefone', 'icone': 'camera-fill' })
+            form = ValidarDescricao()
+            request.path = 'registrar_descricao'
+            form.initial.setdefault('descricao', request.COOKIES.get('descricao'))
+            response = render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'registrar_telefone', 'icone': 'clipboard-plus-fill' })
             response.set_cookie('telefone', telefone)
             response.set_cookie('form', 'validar')
             return response
         else:
             return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'registrar_numero', 'icone': 'telephone-fill' })
 
-# Adiciona uma foto
 def registrar_foto(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarFoto()
@@ -187,81 +167,9 @@ def registrar_foto(request):
         response.set_cookie('form', 'validar')
         return response
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
-        form = ValidarFoto(request.POST, request.FILES)
-        if form.is_valid():
-            filename = ""
-            if request.FILES:
-                imagem = Image.open(request.FILES['imagem'])
-                largura, altura = imagem.size
-                exif = imagem.getexif()
-                fator = largura/600
-                imagem = imagem.resize(size=(600, int(altura/fator)), resample=Image.Resampling.LANCZOS)
-                img = BytesIO()
-                imagem.save(img, format='JPEG', quality=70, optimize=True, exif=exif)
-                fs = FileSystemStorage()
-                filename = fs.save('image.jpg', img)
-                print(fs.url(filename))
-            form = ValidarDescricao()
-            request.path = 'registrar_descricao'
-            form.initial.setdefault('descricao', request.COOKIES.get('descricao'))
-            response = render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'registrar_foto', 'icone': 'clipboard-plus-fill' })
-            if request.FILES:
-                response.set_cookie('imagem', imagem)
-                response.set_cookie('filename', filename)
-            else:
-                response.delete_cookie('imagem')
-                response.delete_cookie('filename')
-            response.set_cookie('form', 'validar')
-            return response
-        else:
-            return render(request, 'registrar/foto.html', {'form': form, 'titulo': 'Adicionar fotoY:', 'voltar': 'registrar_telefone', 'icone': 'camera-fill' })
-
-# Valida a Descrição NOVA
-def registrar_descricao(request):
-    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
-        form = ValidarDescricao()
-        form.initial.setdefault('descricao', request.COOKIES.get('descricao'))
-        response = render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'registrar_telefone', 'icone': 'clipboard-plus-fill' })
-        response.set_cookie('form', 'validar')
-        return response
-    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
-        form = ValidarDescricao(request.POST)
-        if form.is_valid():
-            descricao = form.cleaned_data['descricao']
-            form = ValidarPolitica()
-            request.path = 'registrar_politica'
-            response = render(request, 'registrar/politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'registrar_descricao', 'icone': 'shield-fill-check' })
-            response.set_cookie('descricao', descricao)
-            response.set_cookie('form', 'validar')
-            return response
-        else:
-            return render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'registrar_telefone', 'icone': 'clipboard-plus-fill' })
-
-# Valida a localização
-def registrar_localizacao(request):
-    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
-        latitude = request.COOKIES.get('latitude')
-        longitude = request.COOKIES.get('longitude')
-        return render(request, 'registrar/localizacao.html', {'voltar': 'registrar_numero', 'google_map_id': google_map_id, 'latitude': latitude, 'longitude': longitude })
-    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
-        request.path = 'registrar_telefone'
-        form = ValidarTelefone()
-        form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
-        return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'registrar_numero', 'icone': 'telephone-fill' })
-
-# Valida a Política e cria o registro no banco de dados
-def registrar_politica(request):
-    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
-        form = ValidarPolitica()
-        form.initial.setdefault('termos', request.COOKIES.get('termos'))
-        response = render(request, 'registrar/politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'registrar_descricao', 'icone': 'shield-fill-check' })
-        response.set_cookie('form', 'validar')
-        return response
-    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
-        form = ValidarPolitica(request.POST)
+        form = ValidarFoto(request.POST)
         if form.is_valid():
             try:
-                # cria o registro no banco de dados
                 registro = Registro()
                 registro.cep = request.COOKIES.get('cep')
                 registro.endereco = request.COOKIES.get('logradouro')
@@ -273,18 +181,17 @@ def registrar_politica(request):
                 registro.descricao = request.COOKIES.get('descricao')
                 registro.latitude = request.COOKIES.get('latitude')
                 registro.longitude = request.COOKIES.get('longitude')
-                registro.termos = form.cleaned_data['termos']
-                filename = request.COOKIES.get('filename')
-                if (filename):
-                    #path = Path(settings.MEDIA_ROOT + filename)
-                    path = Path(os.path.join(settings.MEDIA_URL, filename))
-                    if (os.path.exists(path)):
-                        print('O caminho existe: ', path)
-                    else:
-                        print('O caminho nao existe: ', path)
-                    with open(path, "rb") as image_file:
-                        registro.imagem = base64.b64encode(image_file.read()).decode('utf-8')
-                    os.remove(path)
+                registro.termos = request.COOKIES.get('termos')
+                if request.FILES:
+                    imagem = Image.open(request.FILES['imagem'])
+                    largura, altura = imagem.size
+                    exif = imagem.getexif()
+                    fator = largura/600
+                    imagem = imagem.resize(size=(600, int(altura/fator)), resample=Image.Resampling.LANCZOS)
+                    img = BytesIO()
+                    imagem.save(img, format='JPEG', quality=70, optimize=True, exif=exif)
+                    img.seek(0)
+                    registro.imagem = base64.b64encode(img.read()).decode('utf-8')
                 registro.save()
                 response = render(request, 'registrar/registro.html', {"mensagem": "Registro salvo com sucesso!"})
                 response.delete_cookie('cep')
@@ -297,16 +204,66 @@ def registrar_politica(request):
                 response.delete_cookie('endereco')
                 response.delete_cookie('latitude')
                 response.delete_cookie('longitude')
-                response.delete_cookie('imagem')
-                response.delete_cookie('filename')
                 response.delete_cookie('form')
                 return response
             except:
                 return render(request, 'registrar/registro.html', {"mensagem": "Erro ao salvar o registro."})
         else:
+            return render(request, 'registrar/foto.html', {'form': form, 'titulo': 'Adicionar fotoY:', 'voltar': 'registrar_telefone', 'icone': 'camera-fill' })
+
+def registrar_descricao(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        form = ValidarDescricao()
+        form.initial.setdefault('descricao', request.COOKIES.get('descricao'))
+        response = render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'registrar_telefone', 'icone': 'clipboard-plus-fill' })
+        response.set_cookie('form', 'validar')
+        return response
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
+        form = ValidarDescricao(request.POST)
+        if form.is_valid():
+            descricao = form.cleaned_data['descricao']
+            form = ValidarFoto()
+            request.path = 'registrar_foto'
+            form.initial.setdefault('descricao', request.COOKIES.get('descricao'))
+            response = render(request, 'registrar/foto.html', {'form': form, 'titulo': 'Adicionar foto:', 'voltar': 'registrar_descricao', 'icone': 'camera-fill' })
+            response.set_cookie('descricao', descricao)
+            response.set_cookie('form', 'validar')
+            return response
+        else:
+            return render(request, 'modal.html', {'form': form, 'titulo': 'Descreva o local:', 'voltar': 'registrar_telefone', 'icone': 'clipboard-plus-fill' })
+
+def registrar_localizacao(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        latitude = request.COOKIES.get('latitude')
+        longitude = request.COOKIES.get('longitude')
+        return render(request, 'registrar/localizacao.html', {'voltar': 'registrar_numero', 'google_map_id': google_map_id, 'latitude': latitude, 'longitude': longitude })
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
+        request.path = 'registrar_telefone'
+        form = ValidarTelefone()
+        form.initial.setdefault('telefone', request.COOKIES.get('telefone'))
+        return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'registrar_numero', 'icone': 'telephone-fill' })
+
+def registrar_politica(request):
+    if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
+        form = ValidarPolitica()
+        form.initial.setdefault('termos', request.COOKIES.get('termos'))
+        response = render(request, 'registrar/politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'registrar_descricao', 'icone': 'shield-fill-check' })
+        response.set_cookie('form', 'validar')
+        return response
+    elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
+        form = ValidarPolitica(request.POST)
+        if form.is_valid():
+            termos = form.cleaned_data['termos']
+            form = ValidarCep()
+            request.path = 'registrar_cep'
+            form.initial.setdefault('cep', request.COOKIES.get('cep'))
+            response = render(request, 'modal.html', {'form': form, 'titulo': 'Informe o CEP:', 'voltar': 'registrar_politica', 'icone': 'house-fill' })
+            response.set_cookie('termos', termos)
+            response.set_cookie('form', 'validar')
+            return response
+        else:
             return render(request, 'registrar/politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'registrar_descricao', 'icone': 'shield-fill-check' })
 
-# Obtem o Telefone
 def registros_telefone(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarTelefone()
@@ -497,7 +454,6 @@ def analise_relatorio(request):
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=False, filename="combate-aedes.pdf")
 
-# Obtem o Estado
 def analise_estado(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = SelecionarEstado()
@@ -519,7 +475,6 @@ def analise_estado(request):
         else:
             return render(request, 'modal.html', {'form': form, 'titulo': 'Selecione o estado:', 'icone': 'clipboard-check-fill', 'header': 'Análise de dados' })
 
-# Obtem a Cidade
 def analise_cidade(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         estado = request.COOKIES.get('estado')
