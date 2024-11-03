@@ -19,8 +19,6 @@ from reportlab.graphics.charts.barcharts import VerticalBarChart
 from io import BytesIO
 from .models import Registro
 from .forms import *
-from django.core.files.storage import FileSystemStorage
-from pathlib import Path
 from PIL import Image
 
 import os
@@ -191,7 +189,8 @@ def registrar_foto(request):
                     img = BytesIO()
                     imagem.save(img, format='JPEG', quality=70, optimize=True, exif=exif)
                     img.seek(0)
-                    registro.imagem = base64.b64encode(img.read()).decode('utf-8')
+                    print(base64.b64encode(img.read()).decode('utf-8'))
+                    #registro.imagem = base64.b64encode(img.read()).decode('utf-8')
                 registro.save()
                 response = render(request, 'registrar/registro.html', {"mensagem": "Registro salvo com sucesso!"})
                 response.delete_cookie('cep')
