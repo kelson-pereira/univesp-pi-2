@@ -13,7 +13,7 @@ class ValidarNumero(forms.Form):
     numero = forms.CharField(initial='', widget=forms.TextInput(attrs={'class':'form-control fs-2 mt-3','inputmode':'numeric'}), label='Forneça o número do endereço do local do foco suspeito.', validators=[RegexValidator('^[0-9]{0,6}$', message='Número inválido, use somente números.')])
 
 class ValidarTelefone(forms.Form):
-    telefone = forms.CharField(initial='', widget=forms.TextInput(attrs={'class':'form-control fs-2 mt-3','inputmode':'numeric'}), label='Informe seu número de telefone com DDD no formato 12987654321. Ele será solicitado se você optar por apagar esses dados.', validators=[RegexValidator('^([0-9]{11})$', message='Telefone inválido, use somente números.')])
+    telefone = forms.CharField(initial='', widget=forms.TextInput(attrs={'class':'form-control fs-2 mt-3','inputmode':'numeric'}), label='Informe seu número de telefone com DDD no formato 12987654321. Ele será solicitado se você optar por visualizar ou apagar esses dados.', validators=[RegexValidator('^([0-9]{11})$', message='Telefone inválido, use somente números.')])
 
 class ValidarFoto(forms.Form):
     imagem = forms.ImageField(widget=forms.FileInput(attrs={'class':'form-control mt-3','id':'file-input','data-btnText':'Select'}), label='(Opcional) Se possível, adicione uma foto do local suspeito. Isso pode auxiliar significativamente nas ações de combate ao mosquito.', validators=[FileExtensionValidator(allowed_extensions=['jpg','jpeg','png','heic'], message='Formato inválido, use .jpg, .jpeg, .png ou .heic')], required=False)
