@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core import serializers
-from django.db.models import Count, Case, When
+from django.db.models import Count, Case, When, Value
 from django.shortcuts import render
 from django.utils import timezone
 from django.http import FileResponse
@@ -189,8 +189,8 @@ def registrar_foto(request):
                     img = BytesIO()
                     imagem.save(img, format='JPEG', quality=70, optimize=True, exif=exif)
                     img.seek(0)
-                    print(base64.b64encode(img.read()).decode('utf-8'))
-                    #registro.imagem = base64.b64encode(img.read()).decode('utf-8')
+                    #registro.foto = base64.b64encode(img.read()).decode('utf-8')
+                    registro.foto = img.read()
                 registro.save()
                 response = render(request, 'registrar/registro.html', {"mensagem": "Registro salvo com sucesso!"})
                 response.delete_cookie('cep')
@@ -246,7 +246,7 @@ def registrar_politica(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarPolitica()
         form.initial.setdefault('termos', request.COOKIES.get('termos'))
-        response = render(request, 'registrar/politica.html', {'form': form, 'titulo': 'Privacidade:', 'voltar': 'registrar_descricao', 'icone': 'shield-fill-check' })
+        response = render(request, 'registrar/politica.html', {'form': form, 'titulo': 'Privacidade:', 'icone': 'shield-fill-check' })
         response.set_cookie('form', 'validar')
         return response
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
@@ -275,9 +275,7 @@ def registros_telefone(request):
         if form.is_valid():
             telefone = form.cleaned_data['telefone']
             forty_days = timezone.now() - timedelta(days = 40)
-            registros = Registro.objects.filter(datahora__gte=forty_days, telefone=telefone).values('ident', 'datahora', 'endereco', 'numero', 'descricao')
-            #.annotate(tem_imagem=Case(When(imagem__isnull=True, then='0')), default='1')
-            print(registros)
+            registros = Registro.objects.filter(datahora__gte=forty_days, telefone=telefone).annotate(tem_foto=Case(When(foto__isnull=True, then=Value('')), default=Value('sim'))).values('ident', 'datahora', 'endereco', 'numero', 'descricao', 'tem_foto')
             response = render(request, 'registros/registros.html', {"registros": registros, 'voltar': 'registros_telefone' })
             response.set_cookie('telefone', telefone)
             return response
@@ -287,19 +285,20 @@ def registros_telefone(request):
 def registros(request):
     forty_days = timezone.now() - timedelta(days = 40)
     telefone = request.COOKIES.get('telefone')
-    registros = Registro.objects.filter(datahora__gte=forty_days, telefone=telefone).values('ident', 'datahora', 'endereco', 'numero', 'descricao')
+    registros = Registro.objects.filter(datahora__gte=forty_days, telefone=telefone).annotate(tem_foto=Case(When(foto__isnull=True, then=Value('')), default=Value('sim'))).values('ident', 'datahora', 'endereco', 'numero', 'descricao', 'tem_foto')
     return render(request, 'registros/registros.html', {"registros": registros, 'voltar': 'registros_telefone',})
 
 def registros_visualizar(request, ident):
     registro = Registro.objects.get(ident=ident)
     latitude = str(registro.latitude)
     longitude = str(registro.longitude)
-    foto = True if (registro.imagem) else False
+    foto = True if (registro.foto) else False
     return render(request, 'registros/visualizar.html', {"registro": registro, 'voltar': 'registros', 'foto': foto, 'google_map_id': google_map_id, 'latitude': latitude, 'longitude': longitude })
 
 def registros_foto(request, ident):
     registro = Registro.objects.get(ident=ident)
-    return render(request, 'registros/foto.html', {"registro": registro, 'voltar': 'registros_visualizar'})
+    foto = base64.b64encode(registro.foto).decode('utf-8')
+    return render(request, 'registros/foto.html', {"registro": registro, "foto": foto, 'voltar': 'registros_visualizar'})
 
 def registros_apagar(request, ident):
     registro = Registro.objects.get(ident=ident)

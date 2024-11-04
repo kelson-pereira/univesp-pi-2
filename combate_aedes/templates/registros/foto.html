@@ -11,9 +11,7 @@
         </div>
     </div>
     <div class="modal-body d-flex p-0" style="touch-action: pan-y;">
-        {% if registro.imagem %}
-        <img class="d-flex flex-grow-1 object-fit-contain w-100 img-fluid" src="data:image/png;base64,{{ registro.imagem }}">
-        {% endif %}
+        <img class="d-flex flex-grow-1 object-fit-contain w-100 img-fluid" src="data:image/png;base64,{{ foto }}">
     </div>
     <div class="modal-footer">
         {% if voltar %}
