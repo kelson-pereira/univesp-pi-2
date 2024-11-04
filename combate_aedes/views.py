@@ -241,6 +241,9 @@ def registrar_localizacao(request):
         return render(request, 'modal.html', {'form': form, 'titulo': 'Informe seu telefone:', 'voltar': 'registrar_numero', 'icone': 'telephone-fill' })
 
 def registrar_politica(request):
+    return render(request, 'registrar/registro.html', {"mensagem": "Registro salvo com sucesso!"})
+
+def registrar_politica_(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarPolitica()
         form.initial.setdefault('termos', request.COOKIES.get('termos'))
