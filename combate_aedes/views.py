@@ -160,7 +160,7 @@ def registrar_foto(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
         form = ValidarFoto()
         imagem = request.COOKIES.get('imagem')
-        response = render(request, 'registrar/foto.html', {'form': form, 'titulo': 'Adicionar foto:', 'voltar': 'registrar_telefone', 'icone': 'camera-fill' })
+        response = render(request, 'registrar/foto.html', {'form': form, 'titulo': 'Adicione uma foto:', 'voltar': 'registrar_telefone', 'icone': 'camera-fill' })
         response.set_cookie('form', 'validar')
         return response
     elif request.method == "POST" and request.COOKIES.get('form') == 'validar':
@@ -206,7 +206,7 @@ def registrar_foto(request):
             except:
                 return render(request, 'registrar/registro.html', {"mensagem": "Erro ao salvar o registro."})
         else:
-            return render(request, 'registrar/foto.html', {'form': form, 'titulo': 'Adicionar fotoY:', 'voltar': 'registrar_telefone', 'icone': 'camera-fill' })
+            return render(request, 'registrar/foto.html', {'form': form, 'titulo': 'Adicione uma foto:', 'voltar': 'registrar_telefone', 'icone': 'camera-fill' })
 
 def registrar_descricao(request):
     if request.method == "GET" or request.COOKIES.get('form') == 'inicial':
@@ -222,7 +222,7 @@ def registrar_descricao(request):
             form = ValidarFoto()
             request.path = 'registrar_foto'
             form.initial.setdefault('descricao', request.COOKIES.get('descricao'))
-            response = render(request, 'registrar/foto.html', {'form': form, 'titulo': 'Adicionar foto:', 'voltar': 'registrar_descricao', 'icone': 'camera-fill' })
+            response = render(request, 'registrar/foto.html', {'form': form, 'titulo': 'Adicione uma foto:', 'voltar': 'registrar_descricao', 'icone': 'camera-fill' })
             response.set_cookie('descricao', descricao)
             response.set_cookie('form', 'validar')
             return response

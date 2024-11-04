@@ -37,7 +37,6 @@ class ViewsTestCase(TestCase):
     def test_obtem_endereco_invalido(self):
         endereco = (False, '', '', '', '')
         results = obtem_endereco('12345678')
-        print(results)
         self.assertEqual(results, endereco)
 
     def test_obtem_coordenadas_valido(self):
@@ -161,7 +160,6 @@ class ViewsTestCase(TestCase):
     def test_registrar_localizacao_valido(self):
         self.client.cookies['form'] = 'validar'
         response = self.client.post(reverse('registrar_localizacao'))
-        print(response.context)
         self.assertContains(response, 'Informe seu telefone:')
 
     def test_registros_telefone(self):
@@ -176,7 +174,6 @@ class ViewsTestCase(TestCase):
     def test_registros_telefone_valido_2(self):
         self.client.cookies['form'] = 'validar'
         response = self.client.post(reverse('registros_telefone'), {'telefone': '12987654321'})
-        print(response.context)
         self.assertContains(response, 'Avenida Presidente Juscelino Kubitschek')
 
     def test_registros_telefone_invalido(self):
