@@ -24,12 +24,12 @@
         {% else %}
         <button type="button" class="btn rounded-pill btn-secondary" data-bs-dismiss="modal">Fechar</button>
         {% endif %}
-        <button type="button" class="btn rounded-pill btn-danger" hx-get="{% url 'registros_apagar' ident=registro.ident %}" hx-target="#dialog">
-            <span id="loader" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-            <span>Apagar</span>
-        </button>
+        <button type="button" class="btn rounded-pill btn-danger" hx-get="{% url 'registros_apagar' ident=registro.ident %}" hx-target="#dialog">Apagar</button>
         {% if foto %}
-        <button type="button" class="btn rounded-pill btn-primary" hx-get="{% url 'registros_foto' ident=registro.ident %}" hx-target="#dialog">Ver Foto</button>
+        <button type="button" class="btn rounded-pill btn-primary" hx-get="{% url 'registros_foto' ident=registro.ident %}" hx-target="#dialog">
+            <span id="loader" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span>Ver foto</span>
+        </button>
         {% endif %}
     </div>
 </form>

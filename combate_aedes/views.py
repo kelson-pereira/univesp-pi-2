@@ -19,9 +19,8 @@ from reportlab.graphics.charts.barcharts import VerticalBarChart
 from io import BytesIO
 from .models import Registro
 from .forms import *
-from PIL import Image
 
-import os
+import PIL
 import base64
 import brazilcep
 import googlemaps
@@ -181,15 +180,14 @@ def registrar_foto(request):
                 registro.longitude = request.COOKIES.get('longitude')
                 registro.termos = request.COOKIES.get('termos')
                 if request.FILES:
-                    imagem = Image.open(request.FILES['imagem'])
+                    imagem = PIL.Image.open(request.FILES['imagem'])
                     largura, altura = imagem.size
                     exif = imagem.getexif()
                     fator = largura/600
-                    imagem = imagem.resize(size=(600, int(altura/fator)), resample=Image.Resampling.LANCZOS)
+                    imagem = imagem.resize(size=(600, int(altura/fator)), resample=PIL.Image.Resampling.LANCZOS)
                     img = BytesIO()
                     imagem.save(img, format='JPEG', quality=70, optimize=True, exif=exif)
                     img.seek(0)
-                    #registro.foto = base64.b64encode(img.read()).decode('utf-8')
                     registro.foto = img.read()
                 registro.save()
                 response = render(request, 'registrar/registro.html', {"mensagem": "Registro salvo com sucesso!"})
